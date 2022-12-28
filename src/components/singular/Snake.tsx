@@ -1,5 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, {useState} from "react";
+import {motion} from "framer-motion";
+
 import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";
 
@@ -13,6 +14,111 @@ interface AppleProps {
     value: number
 }
 
+const SnakeLeave:React.FC = () => {
+    return (<div className="relative w-full h-full flex items-center justify-center bg-yellow-400">
+        <motion.svg
+        width="100%"
+        height="170%"
+        viewBox="0 0 100 100"
+        initial="hidden"
+        animate="visible"
+        >
+            <motion.circle
+            cx="0"
+            cy="0"
+            r="50"
+            stroke="#1e40af"
+            style={{
+                strokeWidth: '70px',
+                strokeLinecap: 'round',
+                fill: 'transparent'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 0.25 
+                },
+                visible: () => {
+                    return {
+                        opacity: 1,
+                        rotateZ: 90,
+                        transition: {
+                        duration: 4,
+                        type: "tween",
+                        ease: "linear"
+                        }
+                    };
+                }
+            }}
+            />
+        </motion.svg>
+    </div>);
+}
+
+const SnakeStay:React.FC = () => {
+    return (<div className="relative w-full h-full bg-yellow-400">
+        <motion.svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 100 100"
+        initial="hidden"
+        animate="visible"
+        >
+            <motion.circle
+            cx="0"
+            cy="0"
+            r="50"
+            stroke="#1e40af"
+            style={{
+                strokeWidth: '70px',
+                strokeLinecap: 'round',
+                fill: 'transparent',
+                pathLength: 0.25
+            }}
+            />
+        </motion.svg>
+    </div>);
+}
+
+const SnakeEnter:React.FC = () => {
+    return (<div className="relative w-full h-full flex items-center justify-center bg-yellow-400">
+        <motion.svg
+        width="100%"
+        height="170%"
+        viewBox="0 0 100 100"
+        initial="hidden"
+        animate="visible"
+        >
+            <motion.circle
+            cx="0"
+            cy="0"
+            r="50"
+            stroke="#1e40af"
+            style={{
+                strokeWidth: '70px',
+                strokeLinecap: 'round',
+                fill: 'transparent'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 0.25
+                },
+                visible: () => {
+                    return {
+                        opacity: 1,
+                        rotateZ: [90, 0],
+                        transition: {
+                        duration: 4,
+                        type: "tween",
+                        ease: "linear"
+                        }
+                    };
+                }
+            }}
+            />
+        </motion.svg>
+    </div>);
+}
+
 const Apple:React.FC<AppleProps> = (props) => {
     return (<div className="relative select-none w-full h-full flex items-center justify-center">
         <img src={props.typeOfApple === AppleTypes.Normal ? NormalApple : GoldenApple} 
@@ -24,19 +130,15 @@ const Apple:React.FC<AppleProps> = (props) => {
 const boardSize:number = 11;
 
 const Snake:React.FC = () => {
-    const getBoardTile = (lin: number, col: number) => {
-        return document.getElementById('board')?.children.item(lin * boardSize + col);
-    }
-
-    const buttonHandle = () => {
-        const element:Element | undefined | null = getBoardTile(10, 10);
-        if(element !== undefined && element !== null)
-        {
-            const newApple = React.createElement(Apple, {typeOfApple: AppleTypes.Golden, value: 20}, []);
-            const newElement = React.createElement("div", {}, [newApple]);
-            ReactDOM.render(newElement, element);
-        }
-    }
+    const [tiles, setTiles] = useState<Array<{
+        appleType: AppleTypes | null,
+        appleValue: number
+    }>>(
+        [...Array(boardSize * boardSize)].map(() => {return {
+            appleType: null,
+            appleValue: 0
+        };})
+    );
 
     return (<div className="w-full h-full aspect-square">
         <div 
@@ -47,9 +149,22 @@ const Snake:React.FC = () => {
         }}
         className="grid w-full h-full shadow-2xl
         [&>*:nth-child(even)]:bg-green-500 [&>*:nth-child(odd)]:bg-emerald-700">
-            {[...Array(boardSize * boardSize)].map(() => <div/>)}
+            {tiles.map((e, index) => {return (<div key={index}>
+                {e.appleType !== null && <Apple typeOfApple={e.appleType} value={e.appleValue}/>}
+            </div>)})}
         </div>
-        <button onClick={buttonHandle}>Add apple</button>
+        
+        <div className="mt-32 w-96 h-96">
+            <SnakeLeave/>
+        </div>
+
+        <div className="mt-32 w-96 h-96">
+            <SnakeStay/>
+        </div>
+
+        <div className="mt-32 w-96 h-96">
+            <SnakeEnter/>
+        </div>
     </div>);
 }
 
