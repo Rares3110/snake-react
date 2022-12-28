@@ -2,14 +2,71 @@ import {motion} from "framer-motion";
 
 export namespace SnakePart {
 
+    export enum Direction {
+        Up, Right, Down, Left
+    }
+
+    export const oppositeDirection = (value: Direction) => {
+        switch(value) {
+            case Direction.Up: return Direction.Down;
+            case Direction.Right: return Direction.Left;
+            case Direction.Down: return Direction.Up;
+            case Direction.Left: return Direction.Right;
+        }
+    }
+
     export interface SnakeAnimation {
         duration: number,
         skinColor?: string,
-        eyeColor?: string
+        eyeColor?: string,
+        startDirection: Direction,
+        endDirection: Direction
     }
 
     export const SnakeSideLeave:React.FC<SnakeAnimation> = (props) => {
-        return (<div className="relative w-full h-full flex items-center justify-center">
+        var myScaleX:number = 1;
+        var myScaleY:number = 1;
+        var rotation:number = 0;
+
+        if(props.startDirection === Direction.Left && props.endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 270;
+        } else if(props.startDirection === Direction.Left && props.endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 270;
+        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Left) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 0;
+        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Right) {
+            myScaleX = -1;
+            myScaleY = 1;
+            rotation = 0;
+        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Right) {
+            myScaleX = -1;
+            myScaleY = -1;
+            rotation = 0;  
+        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Left) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 0;  
+        }
+
+        return (<div 
+        style={{
+            transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
+        }}
+        className="relative w-full h-full flex items-center justify-center">
             <motion.svg
             width="100%"
             height="180%"
@@ -49,7 +106,49 @@ export namespace SnakePart {
     }
 
     export const SnakeSideStay:React.FC<SnakeAnimation> = (props) => {
-        return (<div className="relative w-full h-full">
+        var myScaleX:number = 1;
+        var myScaleY:number = 1;
+        var rotation:number = 0;
+
+        if(props.startDirection === Direction.Left && props.endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 270;
+        } else if(props.startDirection === Direction.Left && props.endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 270;
+        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Left) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 0;
+        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Right) {
+            myScaleX = -1;
+            myScaleY = 1;
+            rotation = 0;
+        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Right) {
+            myScaleX = -1;
+            myScaleY = -1;
+            rotation = 0;  
+        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Left) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 0;  
+        }
+
+        return (<div 
+        style={{
+            transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
+        }}
+        className="relative w-full h-full">
             <motion.svg
             width="100%"
             height="100%"
@@ -74,7 +173,51 @@ export namespace SnakePart {
     }
 
     export const SnakeSideEnter:React.FC<SnakeAnimation> = (props) => {
-        return (<div className="relative w-full h-full flex items-center justify-center">
+        var myScaleX:number = 1;
+        var myScaleY:number = 1;
+        var rotation:number = 0;
+        var startDirection:Direction = props.endDirection;
+        var endDirection:Direction = props.startDirection;
+
+        if(startDirection === Direction.Left && endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 270;
+        } else if(startDirection === Direction.Left && endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 270;
+        } else if(startDirection === Direction.Up && endDirection === Direction.Left) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 0;
+        } else if(startDirection === Direction.Up && endDirection === Direction.Right) {
+            myScaleX = -1;
+            myScaleY = 1;
+            rotation = 0;
+        } else if(startDirection === Direction.Right && endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(startDirection === Direction.Right && endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 90;
+        } else if(startDirection === Direction.Down && endDirection === Direction.Right) {
+            myScaleX = -1;
+            myScaleY = -1;
+            rotation = 0;  
+        } else if(startDirection === Direction.Down && endDirection === Direction.Left) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 0;  
+        }
+        
+        return (<div 
+        style={{
+            transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
+        }}
+        className="relative w-full h-full flex items-center justify-center">
             <motion.svg
             width="100%"
             height="180%"
@@ -168,7 +311,33 @@ export namespace SnakePart {
     }
 
     export const SnakeStraightLeave:React.FC<SnakeAnimation> = (props) => {
-        return (<div className="relative w-full h-full flex items-center">
+        var myScaleX:number = 1;
+        var myScaleY:number = 1;
+        var rotation:number = 0;
+
+        if(props.startDirection === Direction.Left && props.endDirection === Direction.Right) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Left) {
+            myScaleX = -1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 0;
+        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 0;
+        }
+        
+        return (<div 
+        style={{
+            transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
+        }}
+        className="relative w-full h-full flex items-center">
             <motion.svg
             className="mt-[70%]"
             width="100%"
@@ -209,7 +378,33 @@ export namespace SnakePart {
     }
 
     export const SnakeStraightStay:React.FC<SnakeAnimation> = (props) => {
-        return (<div className="relative w-full h-full flex items-center overflow-hidden">
+        var myScaleX:number = 1;
+        var myScaleY:number = 1;
+        var rotation:number = 0;
+
+        if(props.startDirection === Direction.Left && props.endDirection === Direction.Right) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Left) {
+            myScaleX = -1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 0;
+        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 0;
+        }
+        
+        return (<div 
+        style={{
+            transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
+        }}
+        className="relative w-full h-full flex items-center overflow-hidden">
             <motion.svg
             width="100%"
             height="170%"
@@ -238,7 +433,35 @@ export namespace SnakePart {
     }
 
     export const SnakeStraightEnter:React.FC<SnakeAnimation> = (props) => {    
-        return (<div className="relative w-full h-full flex items-center">
+        var myScaleX:number = 1;
+        var myScaleY:number = 1;
+        var rotation:number = 0;
+        var startDirection: Direction = props.endDirection;
+        var endDirection: Direction = props.startDirection;
+
+        if(startDirection === Direction.Left && endDirection === Direction.Right) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(startDirection === Direction.Right && endDirection === Direction.Left) {
+            myScaleX = -1;
+            myScaleY = 1;
+            rotation = 90;
+        } else if(startDirection === Direction.Up && endDirection === Direction.Down) {
+            myScaleX = 1;
+            myScaleY = -1;
+            rotation = 0;
+        } else if(startDirection === Direction.Down && endDirection === Direction.Up) {
+            myScaleX = 1;
+            myScaleY = 1;
+            rotation = 0;
+        }
+        
+        return (<div 
+        style={{
+            transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
+        }}
+        className="relative w-full h-full flex items-center">
             <motion.svg
             className="mt-[70%]"
             width="100%"

@@ -48,30 +48,6 @@ const Snake:React.FC = () => {
                 {e.appleType !== null && <Apple typeOfApple={e.appleType} value={e.appleValue}/>}
             </div>)})}
         </div>
-        
-        <div className="mt-36 w-80 h-80">
-            <SnakePart.SnakeSideLeave duration={5} skinColor={'green'}/>
-        </div>
-
-        <div className="mt-36 w-80 h-80">
-            <SnakePart.SnakeSideStay duration={5} skinColor={'green'}/>
-        </div>
-
-        <div className="mt-36 w-80 h-80">
-            <SnakePart.SnakeSideEnter duration={5} skinColor={'green'} eyeColor={'yellow'}/>
-        </div>
-
-        <div className="mt-36 w-80 h-80">
-            <SnakePart.SnakeStraightEnter duration={5} skinColor={'green'} eyeColor={'yellow'}/>
-        </div>
-
-        <div className="mt-36 w-80 h-80">
-            <SnakePart.SnakeStraightLeave duration={5} skinColor={'green'}/>
-        </div>
-
-        <div className="mt-36 w-80 h-80">
-            <SnakePart.SnakeStraightStay duration={5} skinColor={'green'}/>
-        </div>
     </div>);
 }
 
