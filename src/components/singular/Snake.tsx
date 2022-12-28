@@ -115,6 +115,60 @@ const SnakeSideEnter:React.FC = () => {
                 }
             }}
             />
+            <motion.circle
+            cx="0"
+            cy="0"
+            r="33"
+            stroke="black"
+            style={{
+                strokeWidth: '24px',
+                strokeLinecap: 'round',
+                fill: 'transparent'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 0
+                },
+                visible: () => {
+                    return {
+                        opacity: 1,
+                        rotateZ: [90, 0],
+                        transition: {
+                        duration: 4,
+                        type: "tween",
+                        ease: "linear"
+                        }
+                    };
+                }
+            }}
+            />
+            <motion.circle
+            cx="0"
+            cy="0"
+            r="67"
+            stroke="black"
+            style={{
+                strokeWidth: '24px',
+                strokeLinecap: 'round',
+                fill: 'transparent'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 0
+                },
+                visible: () => {
+                    return {
+                        opacity: 1,
+                        rotateZ: [90, 0],
+                        transition: {
+                        duration: 4,
+                        type: "tween",
+                        ease: "linear"
+                        }
+                    };
+                }
+            }}
+            />
         </motion.svg>
     </div>);
 }
@@ -223,6 +277,38 @@ const SnakeStraightEnter:React.FC = () => {
                         ease: "linear"
                         }
                     };
+                }
+            }}
+            />
+            <motion.circle
+            cx="33"
+            cy="35"
+            r="12"
+            style={{
+                fill: 'black'
+            }}
+            animate={{
+                y: 100,
+                transition: {
+                    type: 'tween',
+                    ease: 'linear',
+                    duration: 4
+                }
+            }}
+            />
+            <motion.circle
+            cx="67"
+            cy="35"
+            r="12"
+            style={{
+                fill: 'black'
+            }}
+            animate={{
+                y: 100,
+                transition: {
+                    type: 'tween',
+                    ease: 'linear',
+                    duration: 4
                 }
             }}
             />
