@@ -14,7 +14,7 @@ interface AppleProps {
     value: number
 }
 
-const SnakeLeave:React.FC = () => {
+const SnakeSideLeave:React.FC = () => {
     return (<div className="relative w-full h-full flex items-center justify-center bg-yellow-400">
         <motion.svg
         width="100%"
@@ -54,7 +54,7 @@ const SnakeLeave:React.FC = () => {
     </div>);
 }
 
-const SnakeStay:React.FC = () => {
+const SnakeSideStay:React.FC = () => {
     return (<div className="relative w-full h-full bg-yellow-400">
         <motion.svg
         width="100%"
@@ -79,7 +79,7 @@ const SnakeStay:React.FC = () => {
     </div>);
 }
 
-const SnakeEnter:React.FC = () => {
+const SnakeSideEnter:React.FC = () => {
     return (<div className="relative w-full h-full flex items-center justify-center bg-yellow-400">
         <motion.svg
         width="100%"
@@ -106,6 +106,117 @@ const SnakeEnter:React.FC = () => {
                     return {
                         opacity: 1,
                         rotateZ: [90, 0],
+                        transition: {
+                        duration: 4,
+                        type: "tween",
+                        ease: "linear"
+                        }
+                    };
+                }
+            }}
+            />
+        </motion.svg>
+    </div>);
+}
+
+const SnakeStraightLeave:React.FC = () => {
+    return (<div className="relative w-full h-full flex items-center bg-yellow-400">
+        <motion.svg
+        className="mt-[70%]"
+        width="100%"
+        height="170%"
+        viewBox="0 35 100 170"
+        initial="hidden"
+        animate="visible"
+        >
+            <motion.line
+            x1="50"
+            y1="35"
+            x2="50"
+            y2="135"
+            stroke="#1e40af"
+            style={{
+                strokeWidth: '70px',
+                strokeLinecap: 'round'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 1
+                },
+                visible: () => {
+                    return {
+                        opacity: 1,
+                        pathLength: 0,
+                        transition: {
+                        duration: 4,
+                        type: "tween",
+                        ease: "linear"
+                        }
+                    };
+                }
+            }}
+            />
+        </motion.svg>
+    </div>);
+}
+
+const SnakeStraightStay:React.FC = () => {
+    return (<div className="relative w-full h-full flex items-center overflow-hidden bg-yellow-400">
+        <motion.svg
+        width="100%"
+        height="170%"
+        viewBox="0 0 100 100"
+        initial="hidden"
+        animate="visible"
+        >
+            <motion.line
+            x1="50"
+            y1="0"
+            x2="50"
+            y2="100"
+            stroke="#1e40af"
+            style={{
+                strokeWidth: '70px',
+                strokeLinecap: 'round'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 1
+                }
+            }}
+            />
+        </motion.svg>
+    </div>);
+}
+
+const SnakeStraightEnter:React.FC = () => {
+    return (<div className="relative w-full h-full flex items-center bg-yellow-400">
+        <motion.svg
+        className="mt-[70%]"
+        width="100%"
+        height="170%"
+        viewBox="0 35 100 170"
+        initial="hidden"
+        animate="visible"
+        >
+            <motion.line
+            x1="50"
+            y1="35"
+            x2="50"
+            y2="135"
+            stroke="#1e40af"
+            style={{
+                strokeWidth: '70px',
+                strokeLinecap: 'round'
+            }}
+            variants={{
+                hidden: { 
+                    pathLength: 0
+                },
+                visible: () => {
+                    return {
+                        opacity: 1,
+                        pathLength: 1,
                         transition: {
                         duration: 4,
                         type: "tween",
@@ -154,16 +265,28 @@ const Snake:React.FC = () => {
             </div>)})}
         </div>
         
-        <div className="mt-32 w-96 h-96">
-            <SnakeLeave/>
+        <div className="mt-36 w-96 h-96">
+            <SnakeSideLeave/>
         </div>
 
-        <div className="mt-32 w-96 h-96">
-            <SnakeStay/>
+        <div className="mt-36 w-96 h-96">
+            <SnakeSideStay/>
         </div>
 
-        <div className="mt-32 w-96 h-96">
-            <SnakeEnter/>
+        <div className="mt-36 w-96 h-96">
+            <SnakeSideEnter/>
+        </div>
+
+        <div className="mt-36 w-96 h-96">
+            <SnakeStraightEnter/>
+        </div>
+
+        <div className="mt-36 w-96 h-96">
+            <SnakeStraightLeave/>
+        </div>
+
+        <div className="mt-36 w-96 h-96">
+            <SnakeStraightStay/>
         </div>
     </div>);
 }
