@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
 
@@ -6,6 +6,7 @@ import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";
 import {TbBrandReactNative} from "react-icons/tb";
 import {GiSpikedBall} from "react-icons/gi";
+import { SnakeEngine } from "../utility/SnakeEngine";
 
 enum AppleTypes {
     Normal,
@@ -34,7 +35,7 @@ const Apple:React.FC<AppleProps> = (props) => {
     return (<div className="relative select-none w-full h-full flex items-center justify-center">
         <motion.img 
         animate={{
-            y: ['-5%', '1%', '-5%'],
+            y: ['0%', '-4%', '0%'],
             transition: {
                 duration: 3,
                 repeat: Infinity
@@ -84,6 +85,12 @@ const Snake:React.FC = () => {
             snake: null
         };})
     );
+
+    const snakeEngine = new SnakeEngine(boardSize);
+
+    useEffect(() => {
+        snakeEngine.Start();
+    },);
 
     const buttonAppleHandler = () => setTiles(oldValue => oldValue.map((e, index) => {
         if(index === 100) {
@@ -214,9 +221,10 @@ const Snake:React.FC = () => {
             gridTemplateColumns: 'repeat(' + boardSize + ', minmax(0, 1fr))',
             gridTemplateRows: 'repeat(' + boardSize + ', minmax(0, 1fr))'
         }}
-        className="grid gap-0 w-full h-full shadow-2xl
+        className="grid gap-0 items-center justify-center w-full h-full shadow-2xl
         [&>*:nth-child(even)]:bg-green-500 [&>*:nth-child(odd)]:bg-emerald-700">
-            {tiles.map((e, index) => {return (<div key={index} className="relative w-[calc(100%+0.5px)] h-[calc(100%+0.5px)]">
+            {tiles.map((e, index) => {return (<div key={index} 
+            className="relative w-[calc(100%+0.5px)] h-[calc(100%+0.5px)] flex items-center justify-center">
 
                 {e.appleType !== null && <Apple typeOfApple={e.appleType} value={e.appleValue}/>}
                 
