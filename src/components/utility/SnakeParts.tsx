@@ -66,7 +66,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center justify-center">
+        className="relative w-full h-full flex items-center justify-center z-10">
             <motion.svg
             width="100%"
             height="180%"
@@ -148,7 +148,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full">
+        className="relative w-full h-full z-10">
             <motion.svg
             width="100%"
             height="100%"
@@ -217,7 +217,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center justify-center">
+        className="relative w-full h-full flex items-center justify-center z-10">
             <motion.svg
             width="100%"
             height="180%"
@@ -270,6 +270,8 @@ export namespace SnakePart {
                         return {
                             opacity: 1,
                             rotateZ: [90, 0],
+                            y: [0, -12],
+                            x: [12, 0],
                             transition: {
                             duration: props.duration,
                             type: "tween",
@@ -297,6 +299,8 @@ export namespace SnakePart {
                         return {
                             opacity: 1,
                             rotateZ: [90, 0],
+                            y: [0, -12],
+                            x: [12, 0],
                             transition: {
                             duration: props.duration,
                             type: "tween",
@@ -337,7 +341,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center">
+        className="relative w-full h-full flex items-center z-10">
             <motion.svg
             className="mt-[70%]"
             width="100%"
@@ -404,7 +408,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center overflow-hidden">
+        className="relative w-full h-full flex items-center overflow-hidden z-10">
             <motion.svg
             width="100%"
             height="170%"
@@ -461,7 +465,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center">
+        className="relative w-full h-full flex items-center z-10">
             <motion.svg
             className="mt-[70%]"
             width="100%"
@@ -499,7 +503,7 @@ export namespace SnakePart {
                 />
                 <motion.circle
                 cx="33"
-                cy="35"
+                cy="47"
                 r="12"
                 style={{
                     fill: props.eyeColor !== undefined ? props.eyeColor : 'black'
@@ -515,7 +519,7 @@ export namespace SnakePart {
                 />
                 <motion.circle
                 cx="67"
-                cy="35"
+                cy="47"
                 r="12"
                 style={{
                     fill: props.eyeColor !== undefined ? props.eyeColor : 'black'
