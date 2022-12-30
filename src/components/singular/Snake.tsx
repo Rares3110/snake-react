@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
-import { Coord } from "../utility/usefull";
+import { Coord } from "../utility/Usefull";
  
 import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";
@@ -92,8 +92,7 @@ const Snake:React.FC = () => {
             var coord = SnakeEngine.arrayPozToCoord(index);
             if(mapOfSpikes[coord.y][coord.x] === ' ') {
                 value.hasSpikes = false;
-            }
-            else {
+            } else {
                 value.hasSpikes = true;
             }
 
@@ -109,8 +108,7 @@ const Snake:React.FC = () => {
                 if(toAdd) {
                     value.appleType = appleType;
                     value.appleValue = appleValue;
-                }
-                else {
+                } else {
                     value.appleType = null;
                 }
             }
@@ -119,7 +117,83 @@ const Snake:React.FC = () => {
         }))
     }
 
-    const snakeEngine = useRef(new SnakeEngine(ChangeSpikes, ChangeApple));
+    const changeSnakePiece = (position: Coord, toAdd: boolean,
+        category: SnakePart.SnakePieceCategory = SnakePart.SnakePieceCategory.Stay,
+        startDirection: SnakePart.Direction = SnakePart.Direction.Left, 
+        endDirection: SnakePart.Direction = SnakePart.Direction.Right,
+        duration: number = 1) => {
+        
+        setTiles(oldMap => oldMap.map((value, index) => {
+            var myIndex = SnakeEngine.coordToArrayPoz(position);
+            
+            if(index === myIndex && toAdd) {
+                switch(category) {
+                    case SnakePart.SnakePieceCategory.Enter:
+                        if(startDirection === SnakePart.oppositeDirection(endDirection)) {
+                            value.snake = {
+                                piece: SnakePiece.StraightEnter,
+                                startDirection: startDirection,
+                                endDirection: endDirection,
+                                duration: duration
+                            };
+                        } else {
+                            value.snake = {
+                                piece: SnakePiece.SideEnter,
+                                startDirection: startDirection,
+                                endDirection: endDirection,
+                                duration: duration
+                            };
+                        }
+
+                        break;
+
+                    case SnakePart.SnakePieceCategory.Leave:
+                        if(startDirection === SnakePart.oppositeDirection(endDirection)) {
+                            value.snake = {
+                                piece: SnakePiece.StraightLeave,
+                                startDirection: startDirection,
+                                endDirection: endDirection,
+                                duration: duration
+                            };
+                        } else {
+                            value.snake = {
+                                piece: SnakePiece.SideLeave,
+                                startDirection: startDirection,
+                                endDirection: endDirection,
+                                duration: duration
+                            };
+                        }
+
+                        break;
+
+                        case SnakePart.SnakePieceCategory.Stay:
+                            if(startDirection === SnakePart.oppositeDirection(endDirection)) {
+                                value.snake = {
+                                    piece: SnakePiece.StraightStay,
+                                    startDirection: startDirection,
+                                    endDirection: endDirection,
+                                    duration: duration
+                                };
+                            } else {
+                                value.snake = {
+                                    piece: SnakePiece.SideStay,
+                                    startDirection: startDirection,
+                                    endDirection: endDirection,
+                                    duration: duration
+                                };
+                            }
+    
+                            break;
+                }
+            } else if (index === myIndex && !toAdd) {
+                value.snake = null;
+            }
+            
+            return value;
+        }))
+    }
+
+    const snakeEngine = useRef(new SnakeEngine(ChangeSpikes, ChangeApple, changeSnakePiece));
 
     useEffect(() => {
         snakeEngine.current.Start();

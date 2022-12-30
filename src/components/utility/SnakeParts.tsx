@@ -3,7 +3,11 @@ import {motion} from "framer-motion";
 export namespace SnakePart {
 
     export enum Direction {
-        Up, Right, Down, Left
+        Up = 0, Right = 1, Down = 2, Left = 3
+    }
+
+    export enum SnakePieceCategory {
+        Leave, Stay, Enter
     }
 
     export const oppositeDirection = (value: Direction) => {
@@ -217,7 +221,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center justify-center z-10">
+        className="relative w-full h-full flex items-center justify-center z-20">
             <motion.svg
             width="100%"
             height="180%"
@@ -465,7 +469,7 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center z-10">
+        className="relative w-full h-full flex items-center z-20">
             <motion.svg
             className="mt-[70%]"
             width="100%"

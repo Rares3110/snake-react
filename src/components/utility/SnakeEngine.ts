@@ -1,6 +1,7 @@
 import { SnakePart } from "./SnakeParts";
-import { RemoveFromArray, RandomInteger, Coord } from "./usefull";
+import { removeFromArray, randomInteger, Coord, neighbour } from "./Usefull";
 import { AppleTypes } from "../singular/Snake";
+import { LimitedQueue } from "./LimitedQueue";
 
 export class SnakeEngine {
     private static readonly spikeMaps = [
@@ -92,13 +93,18 @@ export class SnakeEngine {
     
     private changeSpikesMethod: (spikesMap: string[][]) => void;
     private changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void;
+    private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
+        startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number) => void;
 
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
         changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void,
+        changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
+            startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number) => void,
         speed?: number) {
         this.changeSpikesMethod = changeSpikesMethod;
         this.changeAppleMethod = changeAppleMethod;
+        this.changeSnakeSkinMethod = changeSnakeSkinMethod;
 
         if(speed !== undefined) {
             this.speed = speed;
@@ -113,6 +119,14 @@ export class SnakeEngine {
 
     static coordToArrayPoz = (coord: Coord) => {
         return coord.y * this.boardSize + coord.x;
+    }
+
+    static inBounds = (coord: Coord) => {
+        if(coord.x < 0 || coord.y < 0 || coord.x >= this.boardSize || coord.y >= this.boardSize) {
+            return false;
+        }
+
+        return true;
     }
 
     Start = () => {
@@ -136,35 +150,55 @@ export class SnakeEngine {
 
     private NewLevel = (level: number, appleValue: number, speed: number) => {
         document.addEventListener('keydown', this.keyDownEventHandler);
-        var levelEnded: boolean = false;
-        var levelTiles: string[][] = SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length];
+        let levelEnded: boolean = false;
+        let levelTiles: string[][] = SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length];
 
-        var emptyTiles: Array<Coord> = [];
-        for(var i = 0; i < SnakeEngine.boardSize; i++)
-            for(var j = 0; j < SnakeEngine.boardSize; j++)
+        let emptyTiles: Array<Coord> = [];
+        //you need something to remove elements from array, probably better to use n * n
+        for(let i = 0; i < SnakeEngine.boardSize; i++)
+            for(let j = 0; j < SnakeEngine.boardSize; j++)
                 if(levelTiles[i][j] === ' ')
+                {
                     emptyTiles.push({y: i, x: j});
+                }
 
         this.changeSpikesMethod(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]);
-        var tile = RemoveFromArray<Coord>(emptyTiles, RandomInteger(0, emptyTiles.length - 1));
-        levelTiles[tile.y][tile.x] = 'A';
-        this.changeAppleMethod(tile, true);
+        
+        let queue = new LimitedQueue<Coord>(SnakeEngine.boardSize * SnakeEngine.boardSize);
+        let tile = removeFromArray<Coord>(emptyTiles, randomInteger(0, emptyTiles.length - 1));
+        let foundDirection = false;
+        for(let i = 0; i <= 3 && !foundDirection; i++) {
+            let secondTile = neighbour(tile, i);
+            if(SnakeEngine.inBounds(secondTile) && levelTiles[secondTile.y][secondTile.x] === ' ') {
+                levelTiles[tile.y][tile.x] = 'S';
+                levelTiles[secondTile.y][secondTile.x] = 'S';
+                this.activeDirection = i;
 
-        var intervalRef = setInterval(() => {
+                queue.add(tile);
+                queue.add(secondTile);
+                this.changeSnakeSkinMethod(tile, true, SnakePart.SnakePieceCategory.Leave,
+                    SnakePart.oppositeDirection(this.activeDirection), this.activeDirection, 100000000);
+                this.changeSnakeSkinMethod(secondTile, true, SnakePart.SnakePieceCategory.Enter,
+                    SnakePart.oppositeDirection(this.activeDirection), this.activeDirection, 100000000);
+
+                foundDirection = true;
+            }
+        }
+
+        let intervalRef = setInterval(() => {
             
 
             if(levelEnded) {
                 clearInterval(intervalRef);
 
                 if(this.gameActive) {
-                    var newAppleValue: number;
-                    var newSpeed: number;
+                    let newAppleValue: number;
+                    let newSpeed: number;
 
                     if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
                         newAppleValue = appleValue + 1;
                         newSpeed = Math.max(speed * 0.9, 0.2);
-                    }
-                    else {
+                    } else {
                         newAppleValue = appleValue;
                         newSpeed = speed;
                     }
