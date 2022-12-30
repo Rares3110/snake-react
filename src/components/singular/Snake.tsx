@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
-import { Coord } from "../utility/Usefull";
+import { Coord } from "../utility/Utility";
  
 import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";

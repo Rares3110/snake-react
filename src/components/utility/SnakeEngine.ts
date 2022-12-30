@@ -1,5 +1,5 @@
 import { SnakePart } from "./SnakeParts";
-import { removeFromArray, randomInteger, Coord, neighbour } from "./Usefull";
+import { removeFromArray, randomInteger, Coord, neighbour } from "./Utility";
 import { AppleTypes } from "../singular/Snake";
 import { LimitedQueue } from "./LimitedQueue";
 
