@@ -273,6 +273,14 @@ const Snake:React.FC = () => {
 
             </div>)})}
         </div>
+
+        <div className="w-56 h-56 mt-56">
+            <SnakePart.SnakeSideLeave 
+            startDirection={SnakePart.Direction.Down}
+            endDirection={SnakePart.Direction.Left}
+            duration={10}
+            startFrom={5}/>
+        </div>
     </div>);
 }
 

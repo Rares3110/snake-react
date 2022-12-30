@@ -1,5 +1,5 @@
 import { SnakePart } from "./SnakeParts";
-import { removeFromArray, randomInteger, Coord, neighbour } from "./Utility";
+import { removeCoordFromArray, randomInteger, Coord, neighbour} from "./Utility";
 import { AppleTypes } from "../singular/Snake";
 import { LimitedQueue } from "./LimitedQueue";
 
@@ -90,11 +90,16 @@ export class SnakeEngine {
     private activeDirection: SnakePart.Direction = SnakePart.Direction.Right;
     private gameActive: boolean = false;
     private gameEnded: boolean = false;
-    
+
     private changeSpikesMethod: (spikesMap: string[][]) => void;
     private changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void;
     private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
         startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number) => void;
+
+    private canChangeDirection: boolean = false;
+    private canQueueDirection: boolean = false;
+    //if I make changes to the snake and don't want to interfere with the async event
+    private queuedDirection: SnakePart.Direction = SnakePart.Direction.Up;
 
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
@@ -137,14 +142,39 @@ export class SnakeEngine {
     }
 
     private keyDownEventHandler = (event: KeyboardEvent) => {
+        let directionChanged: boolean = false;
+        let newDirection: SnakePart.Direction = SnakePart.Direction.Up;
+
         if(event.key === 'ArrowUp' || event.key === 'w') {
-            this.activeDirection = SnakePart.Direction.Up;
+            if(this.activeDirection !== SnakePart.Direction.Down && this.activeDirection !== SnakePart.Direction.Up) {
+                newDirection = SnakePart.Direction.Up;
+                directionChanged = true;
+            }
         } else if(event.key === 'ArrowRight' || event.key === 'd') {
-            this.activeDirection = SnakePart.Direction.Right;
+            if(this.activeDirection !== SnakePart.Direction.Right && this.activeDirection !== SnakePart.Direction.Left) {
+                newDirection = SnakePart.Direction.Right;
+                directionChanged = true;
+            }
         } else if(event.key === 'ArrowDown' || event.key === 's') {
-            this.activeDirection = SnakePart.Direction.Down;
+            if(this.activeDirection !== SnakePart.Direction.Down && this.activeDirection !== SnakePart.Direction.Up) {
+                newDirection = SnakePart.Direction.Down;
+                directionChanged = true;
+            }
         } else if(event.key === 'ArrowLeft' || event.key === 'a') {
-            this.activeDirection = SnakePart.Direction.Left;
+            if(this.activeDirection !== SnakePart.Direction.Right && this.activeDirection !== SnakePart.Direction.Left) {
+                newDirection = SnakePart.Direction.Left;
+                directionChanged = true;
+            };
+        }
+
+        if(directionChanged) {
+            if(this.canQueueDirection) {
+                this.canQueueDirection = false;
+                this.queuedDirection = newDirection;
+            } else if(this.canChangeDirection) {
+                this.activeDirection = newDirection;
+                //special function
+            }
         }
     }
 
@@ -165,18 +195,35 @@ export class SnakeEngine {
         this.changeSpikesMethod(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]);
         
         let queue = new LimitedQueue<Coord>(SnakeEngine.boardSize * SnakeEngine.boardSize);
-        let tile = removeFromArray<Coord>(emptyTiles, randomInteger(0, emptyTiles.length - 1));
+        let snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [...Array(SnakeEngine.boardSize)].map(() => {
+            return [...Array(SnakeEngine.boardSize)];
+        });
+        let firstTile = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
         let foundDirection = false;
         for(let i = 0; i <= 3 && !foundDirection; i++) {
-            let secondTile = neighbour(tile, i);
+            let secondTile = neighbour(firstTile, i);
+
             if(SnakeEngine.inBounds(secondTile) && levelTiles[secondTile.y][secondTile.x] === ' ') {
-                levelTiles[tile.y][tile.x] = 'S';
+                levelTiles[firstTile.y][firstTile.x] = 'S';
                 levelTiles[secondTile.y][secondTile.x] = 'S';
                 this.activeDirection = i;
 
-                queue.add(tile);
+                queue.add(firstTile);
                 queue.add(secondTile);
-                this.changeSnakeSkinMethod(tile, true, SnakePart.SnakePieceCategory.Leave,
+
+                snakeInfo[firstTile.y][firstTile.x] = {
+                    startDirection: SnakePart.oppositeDirection(this.activeDirection),
+                    endDirection: this.activeDirection
+                }
+                snakeInfo[secondTile.y][secondTile.x] = {
+                    startDirection: SnakePart.oppositeDirection(this.activeDirection),
+                    endDirection: this.activeDirection
+                }
+
+                removeCoordFromArray(emptyTiles, firstTile);
+                removeCoordFromArray(emptyTiles, secondTile);
+
+                this.changeSnakeSkinMethod(firstTile, true, SnakePart.SnakePieceCategory.Leave,
                     SnakePart.oppositeDirection(this.activeDirection), this.activeDirection, 100000000);
                 this.changeSnakeSkinMethod(secondTile, true, SnakePart.SnakePieceCategory.Enter,
                     SnakePart.oppositeDirection(this.activeDirection), this.activeDirection, 100000000);
@@ -186,6 +233,16 @@ export class SnakeEngine {
         }
 
         let intervalRef = setInterval(() => {
+            this.canQueueDirection = true;
+            this.canChangeDirection = false;
+
+            //movement
+
+            if(this.canQueueDirection === true) {
+                this.canChangeDirection = true;
+            } else {
+                //special function
+            }
             
 
             if(levelEnded) {

@@ -23,9 +23,9 @@ export class LimitedQueue<T> {
             this.start = (this.start + 1) % this.size;
             this.activeSize++;
             this.array[this.start] = newValue;
+        } else {
+            throw Error('out of bounds');
         }
-
-        throw Error('out of bounds');
     }
 
     remove() {
@@ -34,9 +34,9 @@ export class LimitedQueue<T> {
             this.end = (this.end + 1) % this.size;
             this.activeSize--;
             return this.array[lastPos];
+        } else {
+            throw Error('out of bounds');
         }
-
-        throw Error('out of bounds');
     }
 
     valueFromStart(index:number = 1) {

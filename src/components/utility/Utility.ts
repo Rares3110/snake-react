@@ -19,6 +19,14 @@ export const left = (coord: Coord) => {
     return {x: coord.x - 1, y: coord.y};
 }
 
+export const sameCoord = (coord1: Coord, coord2:Coord) => {
+    if(coord1.x === coord2.x && coord1.y === coord2.y) {
+        return true;
+    }
+
+    return false;
+} 
+
 export const neighbour = (coord: Coord, value: number) => {
     switch(value) {
         case 0: return up(coord);
@@ -29,15 +37,18 @@ export const neighbour = (coord: Coord, value: number) => {
     }
 }
 
-export const removeFromArray = <T>(array: T[], position: number) => {
-    if(position >= 0 && position < array.length) {
-        var value = array[position];
-        [array[array.length - 1], array[position]] = [array[position], array[array.length - 1]];
-        array.pop();
-        return value;
-    }
+export const removeCoordFromArray = (array: Coord[], value: Coord) => {
+    let pozition: number | null = null;
 
-    throw Error('out of bounds');
+    for(let i = 0; i < array.length; i++)
+        if(array[i].y === value.y && array[i].x === value.x) {
+            pozition = i;
+            break;
+        }
+
+    if(pozition !== null) {
+        array.splice(pozition, 1);
+    }
 }
 
 export const randomInteger = (lowest: number, highest: number) => {

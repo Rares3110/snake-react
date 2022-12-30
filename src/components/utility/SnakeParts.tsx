@@ -21,6 +21,7 @@ export namespace SnakePart {
 
     export interface SnakeAnimation {
         duration: number,
+        startFrom?: number,
         skinColor?: string,
         eyeColor?: string,
         startDirection: Direction,
@@ -98,6 +99,7 @@ export namespace SnakePart {
                             rotateZ: 90,
                             transition: {
                             duration: props.duration,
+                            delay: props.startFrom !== undefined ? -props.startFrom : 0,
                             type: "tween",
                             ease: "linear"
                             }
@@ -249,6 +251,7 @@ export namespace SnakePart {
                             rotateZ: [90, 0],
                             transition: {
                             duration: props.duration,
+                            delay: props.startFrom !== undefined ? -props.startFrom : 0,
                             type: "tween",
                             ease: "linear"
                             }
@@ -278,6 +281,7 @@ export namespace SnakePart {
                             x: [12, 0],
                             transition: {
                             duration: props.duration,
+                            delay: props.startFrom !== undefined ? -props.startFrom : 0,
                             type: "tween",
                             ease: "linear"
                             }
@@ -307,6 +311,7 @@ export namespace SnakePart {
                             x: [12, 0],
                             transition: {
                             duration: props.duration,
+                            delay: props.startFrom !== undefined ? -props.startFrom : 0,
                             type: "tween",
                             ease: "linear"
                             }
@@ -374,6 +379,7 @@ export namespace SnakePart {
                             pathLength: 0,
                             transition: {
                             duration: props.duration,
+                            delay: props.startFrom !== undefined ? -props.startFrom : 0,
                             type: "tween",
                             ease: "linear"
                             }
@@ -498,6 +504,7 @@ export namespace SnakePart {
                             pathLength: 1,
                             transition: {
                             duration: props.duration,
+                            delay: props.startFrom !== undefined ? -props.startFrom : 0,
                             type: "tween",
                             ease: "linear"
                             }
@@ -517,7 +524,8 @@ export namespace SnakePart {
                     transition: {
                         type: 'tween',
                         ease: 'linear',
-                        duration: props.duration
+                        duration: props.duration,
+                        delay: props.startFrom !== undefined ? -props.startFrom : 0
                     }
                 }}
                 />
@@ -533,7 +541,8 @@ export namespace SnakePart {
                     transition: {
                         type: 'tween',
                         ease: 'linear',
-                        duration: props.duration
+                        duration: props.duration,
+                        delay: props.startFrom !== undefined ? -props.startFrom : 0
                     }
                 }}
                 />
