@@ -10,15 +10,15 @@ export class LimitedQueue<T> {
         this.size = size;
     }
 
-    isEmpty() {
+    get isEmpty() {
         return this.activeSize === 0;
     }
 
-    actualSize() {
+    get actualSize() {
         return this.activeSize;
     }
 
-    add(newValue: T) {
+    push(newValue: T) {
         if(this.activeSize < this.size) {
             this.start = (this.start + 1) % this.size;
             this.activeSize++;
@@ -28,7 +28,7 @@ export class LimitedQueue<T> {
         }
     }
 
-    remove() {
+    pop() {
         if(this.activeSize > 0) {
             let lastPos = this.end;
             this.end = (this.end + 1) % this.size;

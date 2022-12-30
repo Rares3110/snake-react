@@ -94,18 +94,18 @@ export class SnakeEngine {
     private changeSpikesMethod: (spikesMap: string[][]) => void;
     private changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void;
     private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
-        startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number) => void;
+        startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void;
 
     private canChangeDirection: boolean = false;
-    private canQueueDirection: boolean = false;
-    //if I make changes to the snake and don't want to interfere with the async event
-    private queuedDirection: SnakePart.Direction = SnakePart.Direction.Up;
+    private snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [];
+    private currentHeadOfSnake: Coord = {x: 0, y: 0};
+    private lastCall: number = 0;
 
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
         changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void,
         changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
-            startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number) => void,
+            startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void,
         speed?: number) {
         this.changeSpikesMethod = changeSpikesMethod;
         this.changeAppleMethod = changeAppleMethod;
@@ -137,7 +137,7 @@ export class SnakeEngine {
     Start = () => {
         if(!this.gameActive && !this.gameEnded){
             this.gameActive = true;
-            this.NewLevel(1, 1, 1);
+            this.NewLevel(1, 1);
         }
     }
 
@@ -167,24 +167,31 @@ export class SnakeEngine {
             };
         }
 
-        if(directionChanged) {
-            if(this.canQueueDirection) {
-                this.canQueueDirection = false;
-                this.queuedDirection = newDirection;
-            } else if(this.canChangeDirection) {
-                this.activeDirection = newDirection;
-                //special function
-            }
+        if(directionChanged && this.canChangeDirection) {
+            this.ChangeSnakeDirection(newDirection);
+            this.canChangeDirection = false;
         }
     }
 
-    private NewLevel = (level: number, appleValue: number, speed: number) => {
+    private ChangeSnakeDirection(newDirection: SnakePart.Direction) {
+        this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].startDirection = SnakePart.oppositeDirection(this.activeDirection);
+        this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].endDirection = newDirection;
+        this.activeDirection = newDirection;
+
+        this.changeSnakeSkinMethod(this.currentHeadOfSnake, true,
+            SnakePart.SnakePieceCategory.Enter,
+            this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].startDirection,
+            this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].endDirection,
+            this.speed,
+            (Date.now() - this.lastCall) / 1000);
+    }
+
+    private NewLevel = (level: number, appleValue: number) => {
         document.addEventListener('keydown', this.keyDownEventHandler);
         let levelEnded: boolean = false;
         let levelTiles: string[][] = SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length];
 
         let emptyTiles: Array<Coord> = [];
-        //you need something to remove elements from array, probably better to use n * n
         for(let i = 0; i < SnakeEngine.boardSize; i++)
             for(let j = 0; j < SnakeEngine.boardSize; j++)
                 if(levelTiles[i][j] === ' ')
@@ -195,7 +202,7 @@ export class SnakeEngine {
         this.changeSpikesMethod(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]);
         
         let queue = new LimitedQueue<Coord>(SnakeEngine.boardSize * SnakeEngine.boardSize);
-        let snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [...Array(SnakeEngine.boardSize)].map(() => {
+        this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
             return [...Array(SnakeEngine.boardSize)];
         });
         let firstTile = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
@@ -208,14 +215,14 @@ export class SnakeEngine {
                 levelTiles[secondTile.y][secondTile.x] = 'S';
                 this.activeDirection = i;
 
-                queue.add(firstTile);
-                queue.add(secondTile);
+                queue.push(firstTile);
+                queue.push(secondTile);
 
-                snakeInfo[firstTile.y][firstTile.x] = {
+                this.snakeInfo[firstTile.y][firstTile.x] = {
                     startDirection: SnakePart.oppositeDirection(this.activeDirection),
                     endDirection: this.activeDirection
                 }
-                snakeInfo[secondTile.y][secondTile.x] = {
+                this.snakeInfo[secondTile.y][secondTile.x] = {
                     startDirection: SnakePart.oppositeDirection(this.activeDirection),
                     endDirection: this.activeDirection
                 }
@@ -233,34 +240,66 @@ export class SnakeEngine {
         }
 
         let intervalRef = setInterval(() => {
-            this.canQueueDirection = true;
-            this.canChangeDirection = false;
+            this.canChangeDirection = true;
+            this.lastCall = Date.now();
 
-            //movement
+            let head = queue.valueFromStart();
+            let newHead = neighbour(head, this.activeDirection);
+            let tail = queue.valueFromEnd();
+            let newTail = queue.valueFromEnd(2);
 
-            if(this.canQueueDirection === true) {
-                this.canChangeDirection = true;
+            if(SnakeEngine.inBounds(newHead) && levelTiles[newHead.y][newHead.x] === ' ') {
+                this.snakeInfo[newHead.y][newHead.x] = {
+                    startDirection: SnakePart.oppositeDirection(this.activeDirection),
+                    endDirection: this.activeDirection
+                }
+                
+                this.changeSnakeSkinMethod(newHead, true,
+                    SnakePart.SnakePieceCategory.Enter,
+                    this.snakeInfo[newHead.y][newHead.x].startDirection,
+                    this.snakeInfo[newHead.y][newHead.x].endDirection,
+                    this.speed);
+                levelTiles[newHead.y][newHead.x] = 'S';
+                queue.push(newHead);
+                this.currentHeadOfSnake = newHead;
+
+                if(queue.actualSize > 2) {
+                    this.changeSnakeSkinMethod(head, true, 
+                        SnakePart.SnakePieceCategory.Stay,
+                        this.snakeInfo[head.y][head.x].startDirection,
+                        this.snakeInfo[head.y][head.x].endDirection,
+                        this.speed);
+                }
+
+                this.changeSnakeSkinMethod(tail, false);
+                levelTiles[tail.y][tail.x] = ' ';
+                queue.pop();
+    
+                this.changeSnakeSkinMethod(newTail, true, 
+                    SnakePart.SnakePieceCategory.Leave,
+                    this.snakeInfo[newTail.y][newTail.x].startDirection,
+                    this.snakeInfo[newTail.y][newTail.x].endDirection,
+                    this.speed);
             } else {
-                //special function
+                this.gameActive = false;
+                this.gameEnded = true;
+                levelEnded = true;
             }
-            
 
             if(levelEnded) {
                 clearInterval(intervalRef);
 
                 if(this.gameActive) {
                     let newAppleValue: number;
-                    let newSpeed: number;
 
                     if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
                         newAppleValue = appleValue + 1;
-                        newSpeed = Math.max(speed * 0.9, 0.2);
+                        this.speed = Math.max(this.speed * 0.9, 0.2);
                     } else {
                         newAppleValue = appleValue;
-                        newSpeed = speed;
                     }
 
-                    this.NewLevel(level + 1, newAppleValue, newSpeed);
+                    this.NewLevel(level + 1, newAppleValue);
                 }
             }
         }, this.speed * 1000);
