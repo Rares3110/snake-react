@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
-
+import { Coord } from "../utility/usefull";
+ 
 import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";
 import {TbBrandReactNative} from "react-icons/tb";
 import {GiSpikedBall} from "react-icons/gi";
 import { SnakeEngine } from "../utility/SnakeEngine";
 
-enum AppleTypes {
+export enum AppleTypes {
     Normal,
     Golden
 }
@@ -86,133 +87,43 @@ const Snake:React.FC = () => {
         };})
     );
 
-    const snakeEngine = new SnakeEngine(boardSize);
+    const ChangeSpikes = (mapOfSpikes: string[][]) => {
+        setTiles(oldMap => oldMap.map((value, index) => {
+            var coord = SnakeEngine.arrayPozToCoord(index);
+            if(mapOfSpikes[coord.y][coord.x] === ' ') {
+                value.hasSpikes = false;
+            }
+            else {
+                value.hasSpikes = true;
+            }
 
-    useEffect(() => {
-        snakeEngine.Start();
-    },);
+            return value;
+        }));
+    }
 
-    const buttonAppleHandler = () => setTiles(oldValue => oldValue.map((e, index) => {
-        if(index === 100) {
-            e.appleType = AppleTypes.Golden;
-            e.appleValue = 5;
-        } else if(index === 89) {
-            e.appleType = AppleTypes.Normal;
-            e.appleValue = 10;
-        }
+    const ChangeApple = (position: Coord, toAdd: boolean, appleValue: number = 1, appleType: AppleTypes = AppleTypes.Normal) => {
+        var myIndex = SnakeEngine.coordToArrayPoz(position);
 
-        return e;
-    }));
-
-    const buttonPortalHandler = () => setTiles(oldValue => oldValue.map((e, index) => {
-        if(index === 99 || index === 88) {
-            e.hasPortal = true;
-        } 
-
-        return e;
-    }));
-
-    const buttonSpikesHandler = () => setTiles(oldValue => oldValue.map((e, index) => {
-        if(index === 101 || index === 90) {
-            e.hasSpikes = true;
-        } 
-
-        return e;
-    }));
-
-    const buttonSnakeHandler = () => {
-        setTiles(oldValue => oldValue.map((e, index) => {
-            if(index === 106) {
-                e.snake = {
-                    piece: SnakePiece.SideEnter,
-                    duration: 0.3,
-                    endDirection: SnakePart.Direction.Left,
-                    startDirection: SnakePart.Direction.Up
+        setTiles(oldMap => oldMap.map((value, index) => {
+            if(index === myIndex) {
+                if(toAdd) {
+                    value.appleType = appleType;
+                    value.appleValue = appleValue;
                 }
-            } else if(index === 95) {
-                e.snake = {
-                    piece: SnakePiece.StraightLeave,
-                    duration: 0.3,
-                    endDirection: SnakePart.Direction.Down,
-                    startDirection: SnakePart.Direction.Up
+                else {
+                    value.appleType = null;
                 }
             }
 
-            return e;
-        }));
+            return value;
+        }))
+    }
 
-        setTimeout(() => {
-            setTiles(oldValue => oldValue.map((e, index) => {
-                if(index === 106) {
-                    e.snake = {
-                        piece: SnakePiece.SideLeave,
-                        duration: 0.3,
-                        endDirection: SnakePart.Direction.Left,
-                        startDirection: SnakePart.Direction.Up
-                    }
-                } else if(index === 105) {
-                    e.snake = {
-                        piece: SnakePiece.StraightEnter,
-                        duration: 0.3,
-                        endDirection: SnakePart.Direction.Left,
-                        startDirection: SnakePart.Direction.Right
-                    }
-                } else if(index === 95) {
-                    e.snake = null;
-                }
-    
-                return e;
-            }));
-        }, 300);
+    const snakeEngine = useRef(new SnakeEngine(ChangeSpikes, ChangeApple));
 
-        setTimeout(() => {
-            setTiles(oldValue => oldValue.map((e, index) => {
-                if(index === 104) {
-                    e.snake = {
-                        piece: SnakePiece.StraightEnter,
-                        duration: 0.3,
-                        endDirection: SnakePart.Direction.Left,
-                        startDirection: SnakePart.Direction.Right
-                    }
-                } else if(index === 105) {
-                    e.snake = {
-                        piece: SnakePiece.StraightLeave,
-                        duration: 0.3,
-                        endDirection: SnakePart.Direction.Left,
-                        startDirection: SnakePart.Direction.Right
-                    }
-                } else if(index === 106) {
-                    e.snake = null;
-                }
-    
-                return e;
-            }));
-        }, 600);
-
-        setTimeout(() => {
-            setTiles(oldValue => oldValue.map((e, index) => {
-                if(index === 103) {
-                    e.snake = {
-                        piece: SnakePiece.StraightEnter,
-                        duration: 0.3,
-                        endDirection: SnakePart.Direction.Left,
-                        startDirection: SnakePart.Direction.Right
-                    }
-                } else if(index === 104) {
-                    e.snake = {
-                        piece: SnakePiece.StraightLeave,
-                        duration: 0.3,
-                        endDirection: SnakePart.Direction.Left,
-                        startDirection: SnakePart.Direction.Right
-                    }
-                } else if(index === 105) {
-                    e.snake = null;
-                }
-    
-                return e;
-            }));
-        }, 900);
-    };
+    useEffect(() => {
+        snakeEngine.current.Start();
+    },);
 
     return (<div className="w-full h-full aspect-square">
         <div 
@@ -288,12 +199,6 @@ const Snake:React.FC = () => {
 
             </div>)})}
         </div>
-
-        <button className="text-semibold text-white" onClick={buttonAppleHandler}>&ensp;Apple&ensp;</button>
-        <button className="text-semibold text-white" onClick={buttonPortalHandler}>&ensp;Portal&ensp;</button>
-        <button className="text-semibold text-white" onClick={buttonSnakeHandler}>&ensp;Snake&ensp;</button>
-        <button className="text-semibold text-white" onClick={buttonSpikesHandler}>&ensp;Spikes&ensp;</button>
-        
     </div>);
 }
 
