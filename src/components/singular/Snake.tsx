@@ -34,7 +34,7 @@ interface SnakeType {
 }
 
 const Apple:React.FC<AppleProps> = (props) => {
-    return (<div className="relative select-none w-full h-full flex items-center justify-center">
+    return (<div className="absolute select-none w-full h-full flex items-center justify-center">
         <motion.img 
         animate={{
             y: ['0%', '-4%', '0%'],
@@ -89,13 +89,13 @@ const Snake:React.FC = () => {
     );
 
     //method to add all spikes required on the board
-    const ChangeSpikes = (mapOfSpikes: string[][]) => {
+    const changeSpikes = (mapOfSpikes: string[][]) => {
         setTiles(oldMap => oldMap.map((value, index) => {
-            var coord = SnakeEngine.arrayPozToCoord(index);
-            if(mapOfSpikes[coord.y][coord.x] === ' ') {
-                value.hasSpikes = false;
-            } else {
+            let coord = SnakeEngine.arrayPozToCoord(index);
+            if(mapOfSpikes[coord.y][coord.x] === 'X') {
                 value.hasSpikes = true;
+            } else {
+                value.hasSpikes = false;
             }
 
             return value;
@@ -103,8 +103,8 @@ const Snake:React.FC = () => {
     }
 
     //method to add apples on the board
-    const ChangeApple = (position: Coord, toAdd: boolean, appleValue: number = 1, appleType: AppleTypes = AppleTypes.Normal) => {
-        var myIndex = SnakeEngine.coordToArrayPoz(position);
+    const changeApple = (position: Coord, toAdd: boolean, appleValue: number = 1, appleType: AppleTypes = AppleTypes.Normal) => {
+        let myIndex = SnakeEngine.coordToArrayPoz(position);
 
         setTiles(oldMap => oldMap.map((value, index) => {
             if(index === myIndex) {
@@ -117,7 +117,23 @@ const Snake:React.FC = () => {
             }
 
             return value;
-        }))
+        }));
+    }
+
+    const changePortal = (position: Coord, toAdd: boolean) => {
+        let myIndex = SnakeEngine.coordToArrayPoz(position);
+
+        setTiles(oldMap => oldMap.map((value, index) => {
+            if(index === myIndex) {
+                if(toAdd) {
+                    value.hasPortal = true;
+                } else {
+                    value.hasPortal = false;
+                }
+            }
+
+            return value;
+        }));
     }
 
     //method to add snake parts on the board
@@ -128,7 +144,7 @@ const Snake:React.FC = () => {
         duration: number = 1, startFrom: number = 0) => {
         
         setTiles(oldMap => oldMap.map((value, index) => {
-            var myIndex = SnakeEngine.coordToArrayPoz(position);
+            let myIndex = SnakeEngine.coordToArrayPoz(position);
             
             if(index === myIndex && toAdd) {
                 switch(category) {
@@ -203,7 +219,7 @@ const Snake:React.FC = () => {
         }))
     }
 
-    const snakeEngine = useRef(new SnakeEngine(ChangeSpikes, ChangeApple, changeSnakePiece));
+    const snakeEngine = useRef(new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece));
 
     //starting the game
     useEffect(() => {

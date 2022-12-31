@@ -1,5 +1,5 @@
 import { SnakePart } from "./SnakeParts";
-import { removeCoordFromArray, randomInteger, Coord, neighbour} from "./Utility";
+import { removeCoordFromArray, randomInteger, Coord, neighbour, sameCoord} from "./Utility";
 import { AppleTypes } from "../singular/Snake";
 import { LimitedQueue } from "./LimitedQueue";
 
@@ -86,6 +86,7 @@ export class SnakeEngine {
     ];
 
     private static readonly boardSize: number = 11;
+    private static readonly applesToAdvance: number = 5;
     private speed: number;
     private activeDirection: SnakePart.Direction = SnakePart.Direction.Right;
     private gameActive: boolean = false;
@@ -93,6 +94,7 @@ export class SnakeEngine {
 
     private changeSpikesMethod: (spikesMap: string[][]) => void;
     private changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void;
+    private changePortalMethod: (position: Coord, toAdd: boolean) => void;
     private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
         startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void;
 
@@ -105,12 +107,14 @@ export class SnakeEngine {
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
         changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void,
+        changePortalMethod: (position: Coord, toAdd: boolean) => void,
         changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
             startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void,
         speed?: number) {
         this.changeSpikesMethod = changeSpikesMethod;
         this.changeAppleMethod = changeAppleMethod;
         this.changeSnakeSkinMethod = changeSnakeSkinMethod;
+        this.changePortalMethod = changePortalMethod;
 
         if(speed !== undefined) {
             this.speed = speed;
@@ -138,7 +142,7 @@ export class SnakeEngine {
     Start = () => {
         if(!this.gameActive && !this.gameEnded){
             this.gameActive = true;
-            this.NewLevel(3, 1);
+            this.NewLevel(0, 1);
         }
     }
 
@@ -196,17 +200,17 @@ export class SnakeEngine {
     }
 
     private NewLevel = (level: number, appleValue: number) => {
-        document.addEventListener('keydown', this.keyDownEventHandler);
         let levelEnded: boolean = false;
         let levelTiles: string[][] = SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length];
+        let applesEaten: number = 0;
 
         //adding all empty tiles in a single array
         let emptyTiles: Array<Coord> = [];
-        for(let i = 0; i < SnakeEngine.boardSize; i++)
-            for(let j = 0; j < SnakeEngine.boardSize; j++)
-                if(levelTiles[i][j] === ' ')
+        for(let y = 0; y < SnakeEngine.boardSize; y++)
+            for(let x = 0; x < SnakeEngine.boardSize; x++)
+                if(levelTiles[y][x] === ' ')
                 {
-                    emptyTiles.push({y: i, x: j});
+                    emptyTiles.push({y: y, x: x});
                 }
         
         //adding the spikes in the level
@@ -217,8 +221,7 @@ export class SnakeEngine {
         this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
             return [...Array(SnakeEngine.boardSize)];
         });
-
-        //adding rhe first 2 snake pieces
+        //adding the first 2 snake pieces
         let firstTile = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
         let foundDirection = false;
         for(let i = 0; i <= 3 && !foundDirection; i++) {
@@ -231,6 +234,7 @@ export class SnakeEngine {
 
                 queue.push(firstTile);
                 queue.push(secondTile);
+                this.currentHeadOfSnake = secondTile;
 
                 this.snakeInfo[firstTile.y][firstTile.x] = {
                     startDirection: SnakePart.oppositeDirection(this.activeDirection),
@@ -259,8 +263,15 @@ export class SnakeEngine {
             }
         }
 
+        //adding apple
+        let applePosition: Coord = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
+        removeCoordFromArray(emptyTiles, applePosition);
+        this.changeAppleMethod(applePosition, true, appleValue, AppleTypes.Normal);
+
         //the iterations for moving
         let firstIteration: boolean = true;
+        document.addEventListener('keydown', this.keyDownEventHandler);
+
         let intervalRef = setInterval(() => {
             this.canChangeDirection = true;
             this.lastCall = Date.now();
@@ -291,22 +302,13 @@ export class SnakeEngine {
             let tail = queue.valueFromEnd();
             let newTail = queue.valueFromEnd(2);
             
-            //updating the snake
-            if(SnakeEngine.inBounds(newHead) && levelTiles[newHead.y][newHead.x] === ' ') {
+            //updating the snake, checking for collisions
+            if(SnakeEngine.inBounds(newHead) && (levelTiles[newHead.y][newHead.x] === ' ' ||
+            (levelTiles[newHead.y][newHead.x] === 'S' && sameCoord(newHead, tail)))) {
                 this.snakeInfo[newHead.y][newHead.x] = {
                     startDirection: SnakePart.oppositeDirection(this.activeDirection),
                     endDirection: this.activeDirection
                 }
-                
-                this.changeSnakeSkinMethod(newHead, true,
-                    SnakePart.SnakePieceCategory.Enter,
-                    this.snakeInfo[newHead.y][newHead.x].startDirection,
-                    this.snakeInfo[newHead.y][newHead.x].endDirection,
-                    this.speed);
-                levelTiles[newHead.y][newHead.x] = 'S';
-                queue.push(newHead);
-                this.currentHeadOfSnake = newHead;
-                removeCoordFromArray(emptyTiles, newHead);
 
                 if(queue.actualSize > 2) {
                     this.changeSnakeSkinMethod(head, true, 
@@ -316,25 +318,67 @@ export class SnakeEngine {
                         this.speed);
                 }
 
-                this.changeSnakeSkinMethod(tail, false);
-                levelTiles[tail.y][tail.x] = ' ';
-                queue.pop();
-                emptyTiles.push(tail);
-    
-                this.changeSnakeSkinMethod(newTail, true, 
-                    SnakePart.SnakePieceCategory.Leave,
-                    this.snakeInfo[newTail.y][newTail.x].startDirection,
-                    this.snakeInfo[newTail.y][newTail.x].endDirection,
+                //if it eats an apple it
+                if(sameCoord(newHead, applePosition)) {
+                    this.changeAppleMethod(applePosition, false);
+                    applesEaten++;
+
+                    if(emptyTiles.length > 0 && applesEaten === SnakeEngine.applesToAdvance) {
+                        let portalPosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
+                        removeCoordFromArray(emptyTiles, portalPosition);
+                        this.changePortalMethod(portalPosition, true);
+                        levelTiles[portalPosition.y][portalPosition.x] = 'P';
+                    }
+
+                    if(emptyTiles.length > 0) {
+                        applePosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
+                        removeCoordFromArray(emptyTiles, applePosition);
+
+                        if(applesEaten < SnakeEngine.applesToAdvance)
+                            this.changeAppleMethod(applePosition, true, appleValue, AppleTypes.Normal);
+                        else
+                            this.changeAppleMethod(applePosition, true, Math.ceil(appleValue * 1.5), AppleTypes.Golden);
+                    }
+
+                    this.changeSnakeSkinMethod(newTail, true, 
+                        SnakePart.SnakePieceCategory.Stay,
+                        this.snakeInfo[newTail.y][newTail.x].startDirection,
+                        this.snakeInfo[newTail.y][newTail.x].endDirection,
+                        this.speed);
+                } else {
+                    queue.pop();
+                    emptyTiles.push(tail);
+                    this.changeSnakeSkinMethod(tail, false);
+                    levelTiles[tail.y][tail.x] = ' ';
+
+                    this.changeSnakeSkinMethod(newTail, true, 
+                        SnakePart.SnakePieceCategory.Leave,
+                        this.snakeInfo[newTail.y][newTail.x].startDirection,
+                        this.snakeInfo[newTail.y][newTail.x].endDirection,
+                        this.speed);
+                }
+
+                this.changeSnakeSkinMethod(newHead, true,
+                    SnakePart.SnakePieceCategory.Enter,
+                    this.snakeInfo[newHead.y][newHead.x].startDirection,
+                    this.snakeInfo[newHead.y][newHead.x].endDirection,
                     this.speed);
+                levelTiles[newHead.y][newHead.x] = 'S';
+                queue.push(newHead);
+                this.currentHeadOfSnake = newHead;
+                removeCoordFromArray(emptyTiles, newHead);
             } else {
-                this.gameActive = false;
-                this.gameEnded = true;
+                if(levelTiles[newHead.y][newHead.x] !== 'P') {
+                    this.gameActive = false;
+                    this.gameEnded = true;
+                }
                 levelEnded = true;
             }
 
             //after either a portal or after the game ends
             if(levelEnded) {
                 clearInterval(intervalRef);
+                document.removeEventListener('keydown', this.keyDownEventHandler);
 
                 if(this.gameActive) {
                     let newAppleValue: number;
@@ -345,10 +389,20 @@ export class SnakeEngine {
                     } else {
                         newAppleValue = appleValue;
                     }
+                    
+                    for(let y = 0; y < SnakeEngine.boardSize; y++)
+                        for(let x = 0; x < SnakeEngine.boardSize; x++)
+                            if(levelTiles[y][x] === 'S') {
+                                this.changeSnakeSkinMethod({y: y, x: x}, false);
+                            } else if(levelTiles[y][x] === 'P') {
+                                this.changePortalMethod({y: y, x: x}, false);
+                            }
+                    this.changeAppleMethod(applePosition, false);
 
+                    this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
+                        return [...Array(SnakeEngine.boardSize)];
+                    });
                     this.NewLevel(level + 1, newAppleValue);
-                } else {
-                    document.removeEventListener('keydown', this.keyDownEventHandler);
                 }
             }
         }, this.speed * 1000);

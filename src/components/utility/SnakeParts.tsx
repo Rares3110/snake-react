@@ -29,9 +29,9 @@ export namespace SnakePart {
     }
 
     export const SnakeSideLeave:React.FC<SnakeAnimation> = (props) => {
-        var myScaleX:number = 1;
-        var myScaleY:number = 1;
-        var rotation:number = 0;
+        let myScaleX:number = 1;
+        let myScaleY:number = 1;
+        let rotation:number = 0;
 
         if(props.startDirection === Direction.Left && props.endDirection === Direction.Up) {
             myScaleX = 1;
@@ -112,9 +112,9 @@ export namespace SnakePart {
     }
 
     export const SnakeSideStay:React.FC<SnakeAnimation> = (props) => {
-        var myScaleX:number = 1;
-        var myScaleY:number = 1;
-        var rotation:number = 0;
+        let myScaleX:number = 1;
+        let myScaleY:number = 1;
+        let rotation:number = 0;
 
         if(props.startDirection === Direction.Left && props.endDirection === Direction.Up) {
             myScaleX = 1;
@@ -179,11 +179,11 @@ export namespace SnakePart {
     }
 
     export const SnakeSideEnter:React.FC<SnakeAnimation> = (props) => {
-        var myScaleX:number = 1;
-        var myScaleY:number = 1;
-        var rotation:number = 0;
-        var startDirection:Direction = props.endDirection;
-        var endDirection:Direction = props.startDirection;
+        let myScaleX:number = 1;
+        let myScaleY:number = 1;
+        let rotation:number = 0;
+        let startDirection:Direction = props.endDirection;
+        let endDirection:Direction = props.startDirection;
 
         if(startDirection === Direction.Left && endDirection === Direction.Up) {
             myScaleX = 1;
@@ -324,9 +324,9 @@ export namespace SnakePart {
     }
 
     export const SnakeStraightLeave:React.FC<SnakeAnimation> = (props) => {
-        var myScaleX:number = 1;
-        var myScaleY:number = 1;
-        var rotation:number = 0;
+        let myScaleX:number = 1;
+        let myScaleY:number = 1;
+        let rotation:number = 0;
 
         if(props.startDirection === Direction.Left && props.endDirection === Direction.Right) {
             myScaleX = 1;
@@ -392,9 +392,9 @@ export namespace SnakePart {
     }
 
     export const SnakeStraightStay:React.FC<SnakeAnimation> = (props) => {
-        var myScaleX:number = 1;
-        var myScaleY:number = 1;
-        var rotation:number = 0;
+        let myScaleX:number = 1;
+        let myScaleY:number = 1;
+        let rotation:number = 0;
 
         if(props.startDirection === Direction.Left && props.endDirection === Direction.Right) {
             myScaleX = 1;
@@ -447,11 +447,11 @@ export namespace SnakePart {
     }
 
     export const SnakeStraightEnter:React.FC<SnakeAnimation> = (props) => {    
-        var myScaleX:number = 1;
-        var myScaleY:number = 1;
-        var rotation:number = 0;
-        var startDirection: Direction = props.endDirection;
-        var endDirection: Direction = props.startDirection;
+        let myScaleX:number = 1;
+        let myScaleY:number = 1;
+        let rotation:number = 0;
+        let startDirection: Direction = props.endDirection;
+        let endDirection: Direction = props.startDirection;
 
         if(startDirection === Direction.Left && endDirection === Direction.Right) {
             myScaleX = 1;
