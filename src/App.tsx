@@ -1,5 +1,6 @@
 import React from "react";
 import {Routes, Route} from "react-router-dom";
+import FullSizeSnakePage from "./components/pages/FullSizeSnakePage";
 import HomePage from "./components/pages/HomePage";
 import AppleGoldenImage from "./resources/png/apple_golden.png";
 import AppleNormalImage from "./resources/png/apple_normal.png";
@@ -15,6 +16,7 @@ const App:React.FC = () => {
 
 		<Routes>
 			<Route path='/' element={<HomePage/>}/>
+			<Route path='/game' element={<FullSizeSnakePage/>}/>
 		</Routes>
 	</div>);
 }

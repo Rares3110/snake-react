@@ -378,7 +378,7 @@ export class SnakeEngine {
                     this.currentHeadOfSnake = newHead;
                     removeCoordFromArray(emptyTiles, newHead);
                 } else {
-                    if(levelTiles[newHead.y][newHead.x] !== 'P') {
+                    if(!SnakeEngine.inBounds(newHead) || levelTiles[newHead.y][newHead.x] !== 'P') {
                         this.gameActive = false;
                         this.gameEnded = true;
                     }

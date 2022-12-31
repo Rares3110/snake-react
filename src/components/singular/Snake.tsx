@@ -341,7 +341,7 @@ const Snake:React.FC = () => {
 
         {pauseTime !== 0 && <div 
         style={{opacity: Math.min(1, pauseTime / pauseTimeStart + 0.3)}}
-        className="absolute top-0 w-full h-full z-[60]">
+        className="absolute top-0 w-full h-full flex items-center justify-center z-[60]">
             <div className="text-white font-bold text-[120px]">{pauseTime}{pauseTime === Math.floor(pauseTime) ? ".0" : ""}</div>
         </div>}
 

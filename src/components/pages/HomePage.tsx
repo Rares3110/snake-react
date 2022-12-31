@@ -7,8 +7,11 @@ import Snake from "../singular/Snake";
 import Pic1Header from "../../resources/png/gather-points.png";
 import Pic2Header from "../../resources/png/show-black-hole.png";
 import Pic3Header from "../../resources/png/avoid-obstacles.png";
+import { useNavigate } from "react-router-dom";
 
 const HomePage:React.FC = () => {
+    const navigate = useNavigate();
+
     return (<div className="flex flex-col w-full items-center">
         <NavBar/>
         <div className="relative w-full h-80 mt-14">
@@ -29,12 +32,16 @@ const HomePage:React.FC = () => {
         whileHover={{scale: 1.02}}
         whileTap={{scale: 0.98}}
         className="mt-10 flex items-center w-[90%] max-w-[500px] h-16 rounded-full 
-        bg-rose-700 select-none shadow-button">
+        bg-rose-700 select-none shadow-button"
+        onClick={() => {
+            navigate('/game');
+        }}
+        >
             <ImEnlarge className="w-12 h-12 text-white ml-8"/>
             <div className="text-white text-3xl text-center w-full mr-10">Play in full screen mode</div>
         </motion.button>
 
-        <div className="w-[90%] max-w-[500px] mt-10">
+        <div className="w-[85vmin] max-w-[500px] mt-10">
             <Snake/>
         </div>
 
