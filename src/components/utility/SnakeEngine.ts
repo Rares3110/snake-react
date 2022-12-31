@@ -101,6 +101,7 @@ export class SnakeEngine {
     private currentHeadOfSnake: Coord = {x: 0, y: 0};
     private lastCall: number = 0;
 
+    //getting all the methods used to change how the board looks
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
         changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void,
@@ -137,14 +138,21 @@ export class SnakeEngine {
     Start = () => {
         if(!this.gameActive && !this.gameEnded){
             this.gameActive = true;
-            this.NewLevel(1, 1);
+            this.NewLevel(3, 1);
         }
     }
 
+    //input of the user
     private keyDownEventHandler = (event: KeyboardEvent) => {
+        //prevents scrolling the window when playing
+        if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+            event.preventDefault();
+        }
+
         let directionChanged: boolean = false;
         let newDirection: SnakePart.Direction = SnakePart.Direction.Up;
 
+        //checks for a direction change
         if(event.key === 'ArrowUp' || event.key === 'w') {
             if(this.activeDirection !== SnakePart.Direction.Down && this.activeDirection !== SnakePart.Direction.Up) {
                 newDirection = SnakePart.Direction.Up;
@@ -173,6 +181,7 @@ export class SnakeEngine {
         }
     }
 
+    //used  for changing the head piece in the middle of it's animation
     private ChangeSnakeDirection(newDirection: SnakePart.Direction) {
         this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].startDirection = SnakePart.oppositeDirection(this.activeDirection);
         this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].endDirection = newDirection;
@@ -191,6 +200,7 @@ export class SnakeEngine {
         let levelEnded: boolean = false;
         let levelTiles: string[][] = SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length];
 
+        //adding all empty tiles in a single array
         let emptyTiles: Array<Coord> = [];
         for(let i = 0; i < SnakeEngine.boardSize; i++)
             for(let j = 0; j < SnakeEngine.boardSize; j++)
@@ -198,13 +208,17 @@ export class SnakeEngine {
                 {
                     emptyTiles.push({y: i, x: j});
                 }
-
+        
+        //adding the spikes in the level
         this.changeSpikesMethod(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]);
         
+        //the queue for the snake parts
         let queue = new LimitedQueue<Coord>(SnakeEngine.boardSize * SnakeEngine.boardSize);
         this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
             return [...Array(SnakeEngine.boardSize)];
         });
+
+        //adding rhe first 2 snake pieces
         let firstTile = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
         let foundDirection = false;
         for(let i = 0; i <= 3 && !foundDirection; i++) {
@@ -245,12 +259,13 @@ export class SnakeEngine {
             }
         }
 
+        //the iterations for moving
         let firstIteration: boolean = true;
-
         let intervalRef = setInterval(() => {
             this.canChangeDirection = true;
             this.lastCall = Date.now();
 
+            //on first iteration I just start the animation
             if(firstIteration) {
                 firstIteration = false;
                 let head = queue.valueFromStart();
@@ -275,7 +290,8 @@ export class SnakeEngine {
             let newHead = neighbour(head, this.activeDirection);
             let tail = queue.valueFromEnd();
             let newTail = queue.valueFromEnd(2);
-
+            
+            //updating the snake
             if(SnakeEngine.inBounds(newHead) && levelTiles[newHead.y][newHead.x] === ' ') {
                 this.snakeInfo[newHead.y][newHead.x] = {
                     startDirection: SnakePart.oppositeDirection(this.activeDirection),
@@ -316,6 +332,7 @@ export class SnakeEngine {
                 levelEnded = true;
             }
 
+            //after either a portal or after the game ends
             if(levelEnded) {
                 clearInterval(intervalRef);
 

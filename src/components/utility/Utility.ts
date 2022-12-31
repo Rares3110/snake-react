@@ -37,6 +37,7 @@ export const neighbour = (coord: Coord, value: number) => {
     }
 }
 
+//used to remove one value from an array if it exists
 export const removeCoordFromArray = (array: Coord[], value: Coord) => {
     let pozition: number | null = null;
 

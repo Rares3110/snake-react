@@ -88,6 +88,7 @@ const Snake:React.FC = () => {
         };})
     );
 
+    //method to add all spikes required on the board
     const ChangeSpikes = (mapOfSpikes: string[][]) => {
         setTiles(oldMap => oldMap.map((value, index) => {
             var coord = SnakeEngine.arrayPozToCoord(index);
@@ -101,6 +102,7 @@ const Snake:React.FC = () => {
         }));
     }
 
+    //method to add apples on the board
     const ChangeApple = (position: Coord, toAdd: boolean, appleValue: number = 1, appleType: AppleTypes = AppleTypes.Normal) => {
         var myIndex = SnakeEngine.coordToArrayPoz(position);
 
@@ -118,6 +120,7 @@ const Snake:React.FC = () => {
         }))
     }
 
+    //method to add snake parts on the board
     const changeSnakePiece = (position: Coord, toAdd: boolean,
         category: SnakePart.SnakePieceCategory = SnakePart.SnakePieceCategory.Stay,
         startDirection: SnakePart.Direction = SnakePart.Direction.Left, 
@@ -202,6 +205,7 @@ const Snake:React.FC = () => {
 
     const snakeEngine = useRef(new SnakeEngine(ChangeSpikes, ChangeApple, changeSnakePiece));
 
+    //starting the game
     useEffect(() => {
         snakeEngine.current.Start();
     },);
