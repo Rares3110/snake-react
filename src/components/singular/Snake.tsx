@@ -5,7 +5,7 @@ import { Coord } from "../utility/Utility";
  
 import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";
-import {TbBrandReactNative} from "react-icons/tb";
+import PortalImage from "../../resources/png/portal.png";
 import {GiSpikedBall} from "react-icons/gi";
 import {BsTriangleFill} from "react-icons/bs";
 import { SnakeEngine } from "../utility/SnakeEngine";
@@ -61,8 +61,8 @@ const Portal:React.FC = () => {
             duration: 20
         }
     }}
-    className="w-full h-full flex items-center justify-center bg-[#7adc9e] rounded-full">
-        <TbBrandReactNative className="w-[90%] h-[90%] text-sky-800"/>
+    className="w-full h-full flex items-center justify-center bg-white bg-opacity-30 rounded-full">
+        <img src={PortalImage} alt="" className="w-[95%] h-[95%]"/>
     </motion.div>);
 }
 
@@ -351,8 +351,6 @@ const Snake:React.FC = () => {
             <BsTriangleFill className="rotate-90 w-1/5 h-1/5 text-white text-opacity-80"/>
         </button>}
     </div>);
-
-    
 }
 
 export default Snake;
