@@ -114,7 +114,7 @@ export class SnakeEngine {
         if(speed !== undefined) {
             this.speed = speed;
         } else {
-            this.speed = 0.5;
+            this.speed = 0.3;
         }
     }
 
@@ -324,7 +324,7 @@ export class SnakeEngine {
 
                     if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
                         newAppleValue = appleValue + 1;
-                        this.speed = Math.max(this.speed * 0.9, 0.2);
+                        this.speed = Math.max(this.speed - 0.1, 0.1);
                     } else {
                         newAppleValue = appleValue;
                     }
