@@ -115,49 +115,51 @@ export namespace SnakePart {
         let myScaleX:number = 1;
         let myScaleY:number = 1;
         let rotation:number = 0;
+        let startDirection:Direction = props.endDirection;
+        let endDirection:Direction = props.startDirection;
 
-        if(props.startDirection === Direction.Left && props.endDirection === Direction.Up) {
+        if(startDirection === Direction.Left && endDirection === Direction.Up) {
             myScaleX = 1;
             myScaleY = -1;
             rotation = 270;
-        } else if(props.startDirection === Direction.Left && props.endDirection === Direction.Down) {
+        } else if(startDirection === Direction.Left && endDirection === Direction.Down) {
             myScaleX = 1;
             myScaleY = 1;
             rotation = 270;
-        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Left) {
+        } else if(startDirection === Direction.Up && endDirection === Direction.Left) {
             myScaleX = 1;
             myScaleY = 1;
             rotation = 0;
-        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Right) {
+        } else if(startDirection === Direction.Up && endDirection === Direction.Right) {
             myScaleX = -1;
             myScaleY = 1;
             rotation = 0;
-        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Up) {
+        } else if(startDirection === Direction.Right && endDirection === Direction.Up) {
             myScaleX = 1;
             myScaleY = 1;
             rotation = 90;
-        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Down) {
+        } else if(startDirection === Direction.Right && endDirection === Direction.Down) {
             myScaleX = 1;
             myScaleY = -1;
             rotation = 90;
-        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Right) {
+        } else if(startDirection === Direction.Down && endDirection === Direction.Right) {
             myScaleX = -1;
             myScaleY = -1;
             rotation = 0;  
-        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Left) {
+        } else if(startDirection === Direction.Down && endDirection === Direction.Left) {
             myScaleX = 1;
             myScaleY = -1;
             rotation = 0;  
         }
-
+        
         return (<div 
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full z-10">
+        className="relative w-full h-full flex items-center justify-center z-10">
             <motion.svg
             width="100%"
-            height="100%"
+            height="180%"
             viewBox="0 0 100 100"
             initial="hidden"
             animate="visible"
@@ -170,8 +172,24 @@ export namespace SnakePart {
                 style={{
                     strokeWidth: '80px',
                     strokeLinecap: 'round',
-                    fill: 'transparent',
-                    pathLength: 0.25
+                    fill: 'transparent'
+                }}
+                variants={{
+                    hidden: { 
+                        pathLength: 0.25
+                    },
+                    visible: () => {
+                        return {
+                            opacity: 1,
+                            rotateZ: [90, 0],
+                            transition: {
+                            duration: props.duration,
+                            delay: -props.duration,
+                            type: "tween",
+                            ease: "linear"
+                            }
+                        };
+                    }
                 }}
                 />
             </motion.svg>
@@ -395,20 +413,22 @@ export namespace SnakePart {
         let myScaleX:number = 1;
         let myScaleY:number = 1;
         let rotation:number = 0;
+        let startDirection: Direction = props.endDirection;
+        let endDirection: Direction = props.startDirection;
 
-        if(props.startDirection === Direction.Left && props.endDirection === Direction.Right) {
+        if(startDirection === Direction.Left && endDirection === Direction.Right) {
             myScaleX = 1;
             myScaleY = 1;
             rotation = 90;
-        } else if(props.startDirection === Direction.Right && props.endDirection === Direction.Left) {
+        } else if(startDirection === Direction.Right && endDirection === Direction.Left) {
             myScaleX = -1;
             myScaleY = 1;
             rotation = 90;
-        } else if(props.startDirection === Direction.Up && props.endDirection === Direction.Down) {
+        } else if(startDirection === Direction.Up && endDirection === Direction.Down) {
             myScaleX = 1;
             myScaleY = -1;
             rotation = 0;
-        } else if(props.startDirection === Direction.Down && props.endDirection === Direction.Up) {
+        } else if(startDirection === Direction.Down && endDirection === Direction.Up) {
             myScaleX = 1;
             myScaleY = 1;
             rotation = 0;
@@ -418,19 +438,20 @@ export namespace SnakePart {
         style={{
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
-        className="relative w-full h-full flex items-center overflow-hidden z-10">
+        className="relative w-full h-full flex items-center z-10">
             <motion.svg
+            className="mt-[70%]"
             width="100%"
             height="170%"
-            viewBox="0 0 100 100"
+            viewBox="0 35 100 170"
             initial="hidden"
             animate="visible"
             >
                 <motion.line
                 x1="50"
-                y1="0"
+                y1="35"
                 x2="50"
-                y2="100"
+                y2="135"
                 stroke={props.skinColor ?? "#1e40af"}
                 style={{
                     strokeWidth: '80px',
@@ -438,7 +459,19 @@ export namespace SnakePart {
                 }}
                 variants={{
                     hidden: { 
-                        pathLength: 1
+                        pathLength: 0
+                    },
+                    visible: () => {
+                        return {
+                            opacity: 1,
+                            pathLength: 1,
+                            transition: {
+                            duration: props.duration,
+                            delay: -props.duration,
+                            type: "tween",
+                            ease: "linear"
+                            }
+                        };
                     }
                 }}
                 />
