@@ -230,18 +230,46 @@ export class SnakeEngine {
                 removeCoordFromArray(emptyTiles, firstTile);
                 removeCoordFromArray(emptyTiles, secondTile);
 
-                this.changeSnakeSkinMethod(firstTile, true, SnakePart.SnakePieceCategory.Leave,
-                    SnakePart.oppositeDirection(this.activeDirection), this.activeDirection, 100000000);
-                this.changeSnakeSkinMethod(secondTile, true, SnakePart.SnakePieceCategory.Enter,
-                    SnakePart.oppositeDirection(this.activeDirection), this.activeDirection, 100000000);
+                this.changeSnakeSkinMethod(firstTile, true,
+                    SnakePart.SnakePieceCategory.Leave,
+                    this.snakeInfo[firstTile.y][firstTile.x].startDirection,
+                    this.snakeInfo[firstTile.y][firstTile.x].endDirection, 
+                    1000000);
+                this.changeSnakeSkinMethod(secondTile, true, 
+                    SnakePart.SnakePieceCategory.Enter,
+                    this.snakeInfo[secondTile.y][secondTile.x].startDirection, 
+                    this.snakeInfo[secondTile.y][secondTile.x].endDirection, 
+                    1000000);
 
                 foundDirection = true;
             }
         }
 
+        let firstIteration: boolean = true;
+
         let intervalRef = setInterval(() => {
             this.canChangeDirection = true;
             this.lastCall = Date.now();
+
+            if(firstIteration) {
+                firstIteration = false;
+                let head = queue.valueFromStart();
+                let tail = queue.valueFromEnd();
+
+                this.changeSnakeSkinMethod(head, true,
+                    SnakePart.SnakePieceCategory.Enter,
+                    this.snakeInfo[head.y][head.x].startDirection,
+                    this.snakeInfo[head.y][head.x].endDirection,
+                    this.speed);
+
+                this.changeSnakeSkinMethod(tail, true, 
+                    SnakePart.SnakePieceCategory.Leave,
+                    this.snakeInfo[tail.y][tail.x].startDirection,
+                    this.snakeInfo[tail.y][tail.x].endDirection,
+                    this.speed);
+
+                return;
+            }
 
             let head = queue.valueFromStart();
             let newHead = neighbour(head, this.activeDirection);
@@ -262,6 +290,7 @@ export class SnakeEngine {
                 levelTiles[newHead.y][newHead.x] = 'S';
                 queue.push(newHead);
                 this.currentHeadOfSnake = newHead;
+                removeCoordFromArray(emptyTiles, newHead);
 
                 if(queue.actualSize > 2) {
                     this.changeSnakeSkinMethod(head, true, 
@@ -274,6 +303,7 @@ export class SnakeEngine {
                 this.changeSnakeSkinMethod(tail, false);
                 levelTiles[tail.y][tail.x] = ' ';
                 queue.pop();
+                emptyTiles.push(tail);
     
                 this.changeSnakeSkinMethod(newTail, true, 
                     SnakePart.SnakePieceCategory.Leave,
@@ -300,6 +330,8 @@ export class SnakeEngine {
                     }
 
                     this.NewLevel(level + 1, newAppleValue);
+                } else {
+                    document.removeEventListener('keydown', this.keyDownEventHandler);
                 }
             }
         }, this.speed * 1000);

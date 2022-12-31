@@ -215,7 +215,7 @@ const Snake:React.FC = () => {
         }}
         className="grid gap-0 items-center justify-center w-full h-full shadow-2xl
         [&>*:nth-child(even)]:bg-green-500 [&>*:nth-child(odd)]:bg-emerald-700">
-            {tiles.map((e, index) => {return (<div key={index} 
+            {tiles.map((e, index) => {return (<div key={index.toString() + e.snake?.duration.toString()} 
             className="relative w-full h-full">
 
                 {e.appleType !== null && <Apple typeOfApple={e.appleType} value={e.appleValue}/>}
