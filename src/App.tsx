@@ -9,9 +9,9 @@ const App:React.FC = () => {
 	return (<div className="bg-[radial-gradient(#202746,#29335C)]">
 
 		{/*load images on the start to have them ready in the game*/}
-		<img src={AppleGoldenImage} className="invisible" alt=""/>
-		<img src={AppleNormalImage} className="invisible" alt=""/>
-		<img src={PortalImage} className="invisible" alt=""/>
+		<img src={AppleGoldenImage} className="h-0 invisible" alt=""/>
+		<img src={AppleNormalImage} className="h-0 invisible" alt=""/>
+		<img src={PortalImage} className="h-0 invisible" alt=""/>
 
 		<Routes>
 			<Route path='/' element={<HomePage/>}/>

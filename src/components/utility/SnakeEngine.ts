@@ -207,7 +207,8 @@ export class SnakeEngine {
 
     private NewLevel = (level: number, appleValue: number) => {
         let levelEnded: boolean = false;
-        let levelTiles: string[][] = SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length];
+        //cloning a matrix
+        let levelTiles: string[][] = JSON.parse(JSON.stringify(SnakeEngine.spikeMaps[level % SnakeEngine.spikeMaps.length]));
         let applesEaten: number = 0;
 
         //adding all empty tiles in a single array
