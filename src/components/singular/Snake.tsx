@@ -307,6 +307,8 @@ const Snake:React.FC = () => {
             </div>)})}
         </div>
     </div>);
+
+    
 }
 
 export default Snake;

@@ -270,141 +270,144 @@ export class SnakeEngine {
 
         //the iterations for moving
         let firstIteration: boolean = true;
-        document.addEventListener('keydown', this.keyDownEventHandler);
 
-        let intervalRef = setInterval(() => {
-            this.canChangeDirection = true;
-            this.lastCall = Date.now();
+        setTimeout(() => {
+            document.addEventListener('keydown', this.keyDownEventHandler);
 
-            //on first iteration I just start the animation
-            if(firstIteration) {
-                firstIteration = false;
-                let head = queue.valueFromStart();
-                let tail = queue.valueFromEnd();
+            let intervalRef = setInterval(() => {
+                this.canChangeDirection = true;
+                this.lastCall = Date.now();
 
-                this.changeSnakeSkinMethod(head, true,
-                    SnakePart.SnakePieceCategory.Enter,
-                    this.snakeInfo[head.y][head.x].startDirection,
-                    this.snakeInfo[head.y][head.x].endDirection,
-                    this.speed);
+                //on first iteration I just start the animation
+                if(firstIteration) {
+                    firstIteration = false;
+                    let head = queue.valueFromStart();
+                    let tail = queue.valueFromEnd();
 
-                this.changeSnakeSkinMethod(tail, true, 
-                    SnakePart.SnakePieceCategory.Leave,
-                    this.snakeInfo[tail.y][tail.x].startDirection,
-                    this.snakeInfo[tail.y][tail.x].endDirection,
-                    this.speed);
-
-                return;
-            }
-
-            let head = queue.valueFromStart();
-            let newHead = neighbour(head, this.activeDirection);
-            let tail = queue.valueFromEnd();
-            let newTail = queue.valueFromEnd(2);
-            
-            //updating the snake, checking for collisions
-            if(SnakeEngine.inBounds(newHead) && (levelTiles[newHead.y][newHead.x] === ' ' ||
-            (levelTiles[newHead.y][newHead.x] === 'S' && sameCoord(newHead, tail)))) {
-                this.snakeInfo[newHead.y][newHead.x] = {
-                    startDirection: SnakePart.oppositeDirection(this.activeDirection),
-                    endDirection: this.activeDirection
-                }
-
-                if(queue.actualSize > 2) {
-                    this.changeSnakeSkinMethod(head, true, 
-                        SnakePart.SnakePieceCategory.Stay,
+                    this.changeSnakeSkinMethod(head, true,
+                        SnakePart.SnakePieceCategory.Enter,
                         this.snakeInfo[head.y][head.x].startDirection,
                         this.snakeInfo[head.y][head.x].endDirection,
                         this.speed);
-                }
 
-                //if it eats an apple it
-                if(sameCoord(newHead, applePosition)) {
-                    this.changeAppleMethod(applePosition, false);
-                    applesEaten++;
-
-                    if(emptyTiles.length > 0 && applesEaten === SnakeEngine.applesToAdvance) {
-                        let portalPosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
-                        removeCoordFromArray(emptyTiles, portalPosition);
-                        this.changePortalMethod(portalPosition, true);
-                        levelTiles[portalPosition.y][portalPosition.x] = 'P';
-                    }
-
-                    if(emptyTiles.length > 0) {
-                        applePosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
-                        removeCoordFromArray(emptyTiles, applePosition);
-
-                        if(applesEaten < SnakeEngine.applesToAdvance)
-                            this.changeAppleMethod(applePosition, true, appleValue, AppleTypes.Normal);
-                        else
-                            this.changeAppleMethod(applePosition, true, Math.ceil(appleValue * 1.5), AppleTypes.Golden);
-                    }
-
-                    this.changeSnakeSkinMethod(newTail, true, 
-                        SnakePart.SnakePieceCategory.Stay,
-                        this.snakeInfo[newTail.y][newTail.x].startDirection,
-                        this.snakeInfo[newTail.y][newTail.x].endDirection,
-                        this.speed);
-                } else {
-                    queue.pop();
-                    emptyTiles.push(tail);
-                    this.changeSnakeSkinMethod(tail, false);
-                    levelTiles[tail.y][tail.x] = ' ';
-
-                    this.changeSnakeSkinMethod(newTail, true, 
+                    this.changeSnakeSkinMethod(tail, true, 
                         SnakePart.SnakePieceCategory.Leave,
-                        this.snakeInfo[newTail.y][newTail.x].startDirection,
-                        this.snakeInfo[newTail.y][newTail.x].endDirection,
+                        this.snakeInfo[tail.y][tail.x].startDirection,
+                        this.snakeInfo[tail.y][tail.x].endDirection,
                         this.speed);
+
+                    return;
                 }
 
-                this.changeSnakeSkinMethod(newHead, true,
-                    SnakePart.SnakePieceCategory.Enter,
-                    this.snakeInfo[newHead.y][newHead.x].startDirection,
-                    this.snakeInfo[newHead.y][newHead.x].endDirection,
-                    this.speed);
-                levelTiles[newHead.y][newHead.x] = 'S';
-                queue.push(newHead);
-                this.currentHeadOfSnake = newHead;
-                removeCoordFromArray(emptyTiles, newHead);
-            } else {
-                if(levelTiles[newHead.y][newHead.x] !== 'P') {
-                    this.gameActive = false;
-                    this.gameEnded = true;
-                }
-                levelEnded = true;
-            }
-
-            //after either a portal or after the game ends
-            if(levelEnded) {
-                clearInterval(intervalRef);
-                document.removeEventListener('keydown', this.keyDownEventHandler);
-
-                if(this.gameActive) {
-                    let newAppleValue: number;
-
-                    if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
-                        newAppleValue = appleValue + 1;
-                        this.speed = Math.max(this.speed - 0.1, 0.1);
-                    } else {
-                        newAppleValue = appleValue;
+                let head = queue.valueFromStart();
+                let newHead = neighbour(head, this.activeDirection);
+                let tail = queue.valueFromEnd();
+                let newTail = queue.valueFromEnd(2);
+                
+                //updating the snake, checking for collisions
+                if(SnakeEngine.inBounds(newHead) && (levelTiles[newHead.y][newHead.x] === ' ' ||
+                (levelTiles[newHead.y][newHead.x] === 'S' && sameCoord(newHead, tail)))) {
+                    this.snakeInfo[newHead.y][newHead.x] = {
+                        startDirection: SnakePart.oppositeDirection(this.activeDirection),
+                        endDirection: this.activeDirection
                     }
-                    
-                    for(let y = 0; y < SnakeEngine.boardSize; y++)
-                        for(let x = 0; x < SnakeEngine.boardSize; x++)
-                            if(levelTiles[y][x] === 'S') {
-                                this.changeSnakeSkinMethod({y: y, x: x}, false);
-                            } else if(levelTiles[y][x] === 'P') {
-                                this.changePortalMethod({y: y, x: x}, false);
-                            }
-                    this.changeAppleMethod(applePosition, false);
 
-                    this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
-                        return [...Array(SnakeEngine.boardSize)];
-                    });
-                    this.NewLevel(level + 1, newAppleValue);
+                    if(queue.actualSize > 2) {
+                        this.changeSnakeSkinMethod(head, true, 
+                            SnakePart.SnakePieceCategory.Stay,
+                            this.snakeInfo[head.y][head.x].startDirection,
+                            this.snakeInfo[head.y][head.x].endDirection,
+                            this.speed);
+                    }
+
+                    //if it eats an apple it
+                    if(sameCoord(newHead, applePosition)) {
+                        this.changeAppleMethod(applePosition, false);
+                        applesEaten++;
+
+                        if(emptyTiles.length > 0 && applesEaten === SnakeEngine.applesToAdvance) {
+                            let portalPosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
+                            removeCoordFromArray(emptyTiles, portalPosition);
+                            this.changePortalMethod(portalPosition, true);
+                            levelTiles[portalPosition.y][portalPosition.x] = 'P';
+                        }
+
+                        if(emptyTiles.length > 0) {
+                            applePosition = emptyTiles[randomInteger(0, emptyTiles.length - 1)];
+                            removeCoordFromArray(emptyTiles, applePosition);
+
+                            if(applesEaten < SnakeEngine.applesToAdvance)
+                                this.changeAppleMethod(applePosition, true, appleValue, AppleTypes.Normal);
+                            else
+                                this.changeAppleMethod(applePosition, true, Math.ceil(appleValue * 1.5), AppleTypes.Golden);
+                        }
+
+                        this.changeSnakeSkinMethod(newTail, true, 
+                            SnakePart.SnakePieceCategory.Stay,
+                            this.snakeInfo[newTail.y][newTail.x].startDirection,
+                            this.snakeInfo[newTail.y][newTail.x].endDirection,
+                            this.speed);
+                    } else {
+                        queue.pop();
+                        emptyTiles.push(tail);
+                        this.changeSnakeSkinMethod(tail, false);
+                        levelTiles[tail.y][tail.x] = ' ';
+
+                        this.changeSnakeSkinMethod(newTail, true, 
+                            SnakePart.SnakePieceCategory.Leave,
+                            this.snakeInfo[newTail.y][newTail.x].startDirection,
+                            this.snakeInfo[newTail.y][newTail.x].endDirection,
+                            this.speed);
+                    }
+
+                    this.changeSnakeSkinMethod(newHead, true,
+                        SnakePart.SnakePieceCategory.Enter,
+                        this.snakeInfo[newHead.y][newHead.x].startDirection,
+                        this.snakeInfo[newHead.y][newHead.x].endDirection,
+                        this.speed);
+                    levelTiles[newHead.y][newHead.x] = 'S';
+                    queue.push(newHead);
+                    this.currentHeadOfSnake = newHead;
+                    removeCoordFromArray(emptyTiles, newHead);
+                } else {
+                    if(levelTiles[newHead.y][newHead.x] !== 'P') {
+                        this.gameActive = false;
+                        this.gameEnded = true;
+                    }
+                    levelEnded = true;
                 }
-            }
-        }, this.speed * 1000);
+
+                //after either a portal or after the game ends
+                if(levelEnded) {
+                    clearInterval(intervalRef);
+                    document.removeEventListener('keydown', this.keyDownEventHandler);
+
+                    if(this.gameActive) {
+                        let newAppleValue: number;
+
+                        if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
+                            newAppleValue = appleValue + 1;
+                            this.speed = Math.max(this.speed - 0.1, 0.1);
+                        } else {
+                            newAppleValue = appleValue;
+                        }
+                        
+                        for(let y = 0; y < SnakeEngine.boardSize; y++)
+                            for(let x = 0; x < SnakeEngine.boardSize; x++)
+                                if(levelTiles[y][x] === 'S') {
+                                    this.changeSnakeSkinMethod({y: y, x: x}, false);
+                                } else if(levelTiles[y][x] === 'P') {
+                                    this.changePortalMethod({y: y, x: x}, false);
+                                }
+                        this.changeAppleMethod(applePosition, false);
+
+                        this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
+                            return [...Array(SnakeEngine.boardSize)];
+                        });
+                        this.NewLevel(level + 1, newAppleValue);
+                    }
+                }
+            }, this.speed * 1000);
+        }, 2000);
     }
 }
