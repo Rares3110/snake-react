@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
 import { Coord } from "../utility/Utility";
@@ -7,6 +7,7 @@ import NormalApple from "../../resources/png/apple_normal.png";
 import GoldenApple from "../../resources/png/apple_golden.png";
 import {TbBrandReactNative} from "react-icons/tb";
 import {GiSpikedBall} from "react-icons/gi";
+import {BsTriangleFill} from "react-icons/bs";
 import { SnakeEngine } from "../utility/SnakeEngine";
 
 export enum AppleTypes {
@@ -66,7 +67,7 @@ const Portal:React.FC = () => {
 }
 
 const Spikes:React.FC = () => {
-    return(<GiSpikedBall className="absolute w-full h-full text-[#232423] z-[110]"/>);
+    return(<GiSpikedBall className="absolute w-full h-full text-[#232423] z-[50]"/>);
 }
 
 const boardSize:number = 11;
@@ -219,24 +220,55 @@ const Snake:React.FC = () => {
         }))
     }
 
-    const snakeEngine = useRef(new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece));
+    const [isGameRunning, setIsGameRunning] = useState(false);
+    const [pauseTime, setPauseTime] = useState(0);
+    const pauseTimeStart = 2.0;
 
-    //starting the game
-    useEffect(() => {
-        snakeEngine.current.Start();
-    },);
+    const handleStartGame = () => {
+        new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause).Start();
+        setIsGameRunning(true);
+    }
 
-    return (<div className="w-full h-full aspect-square">
+    const clean = () => {
+        pause();
+        setTimeout(() => {
+            setTiles(oldMap => oldMap.map(() => {
+                return {
+                    appleType: null,
+                    appleValue: 0,
+                    hasPortal: false,
+                    hasSpikes: false,
+                    snake: null
+                };
+            }));
+
+            setIsGameRunning(false);
+        }, 2000);
+    }
+
+    const pause = () => {
+        setPauseTime(pauseTimeStart);
+        let intervalRef = setInterval(() => {
+            setPauseTime(oldValue => {
+                oldValue = Math.floor((oldValue - 0.1) * 10) / 10;
+                if(oldValue === 0)
+                    clearInterval(intervalRef);
+                return oldValue;
+            });
+        }, 100);
+    }
+
+    return (<div className="relative w-full h-full aspect-square">
         <div 
         id="board"
         style={{
             gridTemplateColumns: 'repeat(' + boardSize + ', minmax(0, 1fr))',
             gridTemplateRows: 'repeat(' + boardSize + ', minmax(0, 1fr))'
         }}
-        className="grid gap-0 items-center justify-center w-full h-full shadow-2xl
+        className="relative grid gap-0 items-center justify-center w-full h-full shadow-2xl
         [&>*:nth-child(even)]:bg-green-500 [&>*:nth-child(odd)]:bg-emerald-700">
             {tiles.map((e, index) => {return (<div key={index.toString() + e.snake?.duration.toString()} 
-            className="relative w-full h-full">
+            className="relative w-[calc(100%+0.5px)] h-[calc(100%+0.5px)]">
 
                 {e.appleType !== null && <Apple typeOfApple={e.appleType} value={e.appleValue}/>}
                 
@@ -306,6 +338,18 @@ const Snake:React.FC = () => {
 
             </div>)})}
         </div>
+
+        {pauseTime !== 0 && <div 
+        style={{opacity: Math.min(1, pauseTime / pauseTimeStart + 0.3)}}
+        className="absolute top-0 w-full h-full flex items-center justify-center z-[60]">
+            <div className="text-white font-bold text-[120px]">{pauseTime}{pauseTime === Math.floor(pauseTime) ? ".0" : ""}</div>
+        </div>}
+
+        {!isGameRunning && <button className="absolute top-0 w-full h-full bg-black bg-opacity-40 z-[60]
+        flex items-center justify-center"
+        onClick={handleStartGame}>
+            <BsTriangleFill className="rotate-90 w-1/5 h-1/5 text-white text-opacity-80"/>
+        </button>}
     </div>);
 
     

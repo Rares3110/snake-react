@@ -97,6 +97,8 @@ export class SnakeEngine {
     private changePortalMethod: (position: Coord, toAdd: boolean) => void;
     private changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
         startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void;
+    private cleanMethod: () => void;
+    private pauseMethod: () => void;
 
     private canChangeDirection: boolean = false;
     private snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [];
@@ -110,11 +112,15 @@ export class SnakeEngine {
         changePortalMethod: (position: Coord, toAdd: boolean) => void,
         changeSnakeSkinMethod: (position: Coord, toAdd: boolean, category?: SnakePart.SnakePieceCategory, 
             startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void,
+        cleanMethod: () => void,
+        pauseMethod: () => void,
         speed?: number) {
         this.changeSpikesMethod = changeSpikesMethod;
         this.changeAppleMethod = changeAppleMethod;
         this.changeSnakeSkinMethod = changeSnakeSkinMethod;
         this.changePortalMethod = changePortalMethod;
+        this.cleanMethod = cleanMethod;
+        this.pauseMethod = pauseMethod;
 
         if(speed !== undefined) {
             this.speed = speed;
@@ -271,6 +277,7 @@ export class SnakeEngine {
         //the iterations for moving
         let firstIteration: boolean = true;
 
+        this.pauseMethod();
         setTimeout(() => {
             document.addEventListener('keydown', this.keyDownEventHandler);
 
@@ -405,9 +412,13 @@ export class SnakeEngine {
                             return [...Array(SnakeEngine.boardSize)];
                         });
                         this.NewLevel(level + 1, newAppleValue);
+                    } else {
+                        setTimeout(() => {
+                            this.cleanMethod();
+                        }, 1000);
                     }
                 }
             }, this.speed * 1000);
-        }, 2000);
+        }, 1000);
     }
 }
