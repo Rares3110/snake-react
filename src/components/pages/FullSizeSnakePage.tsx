@@ -30,7 +30,10 @@ const FullSizeSnakePage:React.FC = () => {
         };
     });
 
-    return (<div className="w-full flex flex-col items-center justify-center overflow-x-hidden">
+    return (<div 
+    style={{overflowY: showSideInfo ? 'hidden' : 'auto'}}  
+    className="w-full flex flex-col items-center justify-center overflow-x-hidden"
+    >
         <div className="w-[100vmin] h-[100vmin] z-10">
             <Snake setScore={setScore}/>
         </div>

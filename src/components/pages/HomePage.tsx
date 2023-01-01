@@ -16,14 +16,15 @@ const HomePage:React.FC = () => {
     return (<div className="flex flex-col w-full items-center">
         <NavBar/>
         <div className="relative w-full h-80 mt-14">
-            <div className="flex w-full h-full shadow-video-home">
+            <div className="flex w-full h-full">
                 <img className="w-1/3 object-cover object-top" src={Pic1Header} alt=""/>
                 <img className="w-1/3 object-cover" src={Pic2Header} alt=""/>
                 <img className="w-1/3 object-cover" src={Pic3Header} alt=""/>
             </div>
             <div className="absolute top-0 left-1/3 -translate-x-1/2 w-1 h-full bg-black"/>
             <div className="absolute top-0 right-1/3 translate-x-1/2 w-1 h-full bg-black"/>
-            <div className="absolute top-0 w-full h-full bg-black opacity-30"/>
+            <div className="absolute top-0 w-full h-full bg-black opacity-20"/>
+            <div className="absolute top-0 w-full h-full shadow-video-home"/>
             <div className="absolute top-10 w-full text-7xl text-center text-white font-bold">
                 SuperSnake
             </div>
