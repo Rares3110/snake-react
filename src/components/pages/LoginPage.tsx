@@ -1,9 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "../singular/NavBar";
+import { TextBox, TextBoxTypes } from "../utility/TextBox";
+import { motion } from "framer-motion";
 
 const LoginPage:React.FC = () => {
-    return (<div>
+
+    const [isLogin, setIsLogin] = useState(true);
+
+    return (<div className="w-full flex flex-col items-center">
         <NavBar/>
+
+        <div className="mt-20 flex flex-col items-center w-[350px] h-[400px] rounded-lg bg-white shadow-login-form">
+            <div className="mt-4 text-2xl font-semibold text-midnight-blue">
+                Welcome to SuperSnake!
+            </div>
+
+            <div className="flex rounded-xl w-[240px] mt-6 text-lg font-semibold border-[1.5px] border-black">
+                <motion.button className="w-1/2 rounded-xl bg-black text-white outline outline-2 outline-black">
+                    Login
+                </motion.button>
+
+                <motion.button className="w-1/2 rounded-xl">
+                    Sign up
+                </motion.button>
+            </div>
+
+            <TextBox className="mt-6" label="Email" placeholder="email@example.com"/>
+            {!isLogin && <TextBox className="mt-6" label="Username" placeholder="Username"/>}
+            <TextBox className="mt-6" label="Password" placeholder="••••••••••" type={TextBoxTypes.Password}/>
+            {!isLogin && <TextBox className="mt-6" label="Confirm Password" placeholder="••••••••••" type={TextBoxTypes.Password}/>}
+            {isLogin ? 
+            <motion.button
+            className="absolute bottom-6 w-[120px] bg-rose-800 text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
+                Login
+            </motion.button>
+            : 
+            <motion.button
+            className="absolute bottom-6 w-[120px] bg-midnight-blue text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
+                Sign up
+            </motion.button>}
+        </div>
+
+        <div className="h-[200px]"/>
     </div>);
 }
 
