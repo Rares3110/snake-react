@@ -368,7 +368,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
         {pauseTime !== 0 && <div 
         style={{opacity: Math.min(1, pauseTime / pauseTimeStart + 0.3)}}
         className="absolute top-0 w-full h-full flex items-center justify-center z-[60]">
-            <div className="text-white font-bold text-[120px]">{pauseTime}{pauseTime === Math.floor(pauseTime) ? ".0" : ""}</div>
+            <div className="text-white select-none font-bold text-[120px]">{pauseTime}{pauseTime === Math.floor(pauseTime) ? ".0" : ""}</div>
         </div>}
 
         {!isGameRunning && <button className="absolute top-[-0.5px] w-[calc(100%+0.5px)] h-[calc(100%+0.5px)] bg-black bg-opacity-40 z-[60]

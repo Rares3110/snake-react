@@ -15,28 +15,36 @@ const LoginPage:React.FC = () => {
                 Welcome to SuperSnake!
             </div>
 
-            <div className="flex rounded-xl w-[240px] mt-6 text-lg font-semibold border-[1.5px] border-black">
-                <motion.button className="w-1/2 rounded-xl bg-black text-white outline outline-2 outline-black">
+            <div className="flex rounded-xl w-[240px] mt-6 text-lg font-semibold border-[1.5px] border-midnight-blue">
+                <motion.button 
+                onClick={() => setIsLogin(true)}
+                className={"w-1/2 rounded-xl " + (isLogin ? "bg-midnight-blue text-white outline outline-2 outline-midnight-blue" : "")}>
                     Login
                 </motion.button>
 
-                <motion.button className="w-1/2 rounded-xl">
+                <motion.button
+                onClick={() => setIsLogin(false)}
+                className={"w-1/2 rounded-xl " + (!isLogin ? "bg-midnight-blue text-white outline outline-2 outline-midnight-blue" : "")}>
                     Sign up
                 </motion.button>
             </div>
 
-            <TextBox className="mt-6" label="Email" placeholder="email@example.com"/>
-            {!isLogin && <TextBox className="mt-6" label="Username" placeholder="Username"/>}
-            <TextBox className="mt-6" label="Password" placeholder="••••••••••" type={TextBoxTypes.Password}/>
-            {!isLogin && <TextBox className="mt-6" label="Confirm Password" placeholder="••••••••••" type={TextBoxTypes.Password}/>}
+            <TextBox className="mt-4" label="Email" placeholder="email@example.com"/>
+            {!isLogin && <TextBox className="mt-4" label="Username" placeholder="Username"/>}
+            <TextBox className="mt-4" label="Password" placeholder="••••••••••" type={TextBoxTypes.Password}/>
+            {!isLogin && <TextBox className="mt-4" label="Confirm Password" placeholder="••••••••••" type={TextBoxTypes.Password}/>}
             {isLogin ? 
             <motion.button
-            className="absolute bottom-6 w-[120px] bg-rose-800 text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
+            whileHover={{scale: 1.05}}
+            whileTap={{scale: 0.95}}
+            className="absolute bottom-6 w-[120px] bg-midnight-blue text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
                 Login
             </motion.button>
             : 
             <motion.button
-            className="absolute bottom-6 w-[120px] bg-midnight-blue text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
+            whileHover={{scale: 1.05}}
+            whileTap={{scale: 0.95}}
+            className="absolute bottom-6 w-[120px] bg-rose-800 text-white font-bold text-xl rounded-lg pt-[1px] pb-1 shadow-button">
                 Sign up
             </motion.button>}
         </div>
