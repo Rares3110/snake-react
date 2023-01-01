@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
 import { Coord } from "../utility/Utility";
@@ -258,7 +258,33 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
         }, 100);
     }
 
-    return (<div className="relative w-full h-full aspect-square">
+    //on enter scroll to game and start
+    const gridRef:React.RefObject<HTMLInputElement> = useRef(null);
+
+    useEffect(() => {
+        const handleEnterKeyDown = (event: KeyboardEvent) => {
+            if(event.code === 'Enter') {
+                event.preventDefault();
+                if(gridRef.current !== null && !isGameRunning) {
+                    gridRef.current.scrollIntoView({
+                        block: 'center'
+                    });
+
+                    new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause, setScore).Start();
+                    setIsGameRunning(true);
+                }
+            }
+        }
+
+        document.addEventListener('keydown', handleEnterKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleEnterKeyDown);
+        }
+    })
+
+    return (<div 
+    ref={gridRef}
+    className="relative w-full h-full aspect-square">
         <div 
         id="board"
         style={{
