@@ -31,17 +31,18 @@ const HomePage:React.FC = () => {
         <motion.button 
         whileHover={{scale: 1.02}}
         whileTap={{scale: 0.98}}
-        className="mt-10 flex items-center w-[90%] max-w-[500px] h-16 rounded-full 
+        className="mt-10 flex items-center w-[380px] h-16 rounded-full 
         bg-rose-700 select-none shadow-button"
         onClick={() => {
             navigate('/game');
+            window.scrollTo(0, 0);
         }}
         >
-            <ImEnlarge className="w-12 h-12 text-white ml-8"/>
-            <div className="text-white text-3xl text-center w-full mr-10">Play in full screen mode</div>
+            <ImEnlarge className="w-8 h-8 text-white ml-8"/>
+            <div className="text-white text-2xl text-center w-full mr-10">Play in full screen mode</div>
         </motion.button>
 
-        <div className="w-[85vmin] max-w-[500px] mt-10">
+        <div className="w-[70vmin] mt-10">
             <Snake/>
         </div>
 

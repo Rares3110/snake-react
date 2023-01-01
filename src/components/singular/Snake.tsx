@@ -72,7 +72,7 @@ const Spikes:React.FC = () => {
 
 const boardSize:number = 11;
 
-const Snake:React.FC = () => {
+const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> = ({setScore}) => {
     const [tiles, setTiles] = useState<Array<{
         appleType: AppleTypes | null,
         appleValue: number,
@@ -225,7 +225,7 @@ const Snake:React.FC = () => {
     const pauseTimeStart = 2.0;
 
     const handleStartGame = () => {
-        new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause).Start();
+        new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause, setScore).Start();
         setIsGameRunning(true);
     }
 

@@ -99,6 +99,7 @@ export class SnakeEngine {
         startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void;
     private cleanMethod: () => void;
     private pauseMethod: () => void;
+    private setScore?: React.Dispatch<React.SetStateAction<number>>;
 
     private canChangeDirection: boolean = false;
     private snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [];
@@ -114,6 +115,7 @@ export class SnakeEngine {
             startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction, duration?: number, startFrom?: number) => void,
         cleanMethod: () => void,
         pauseMethod: () => void,
+        setScore?: React.Dispatch<React.SetStateAction<number>>,
         speed?: number) {
         this.changeSpikesMethod = changeSpikesMethod;
         this.changeAppleMethod = changeAppleMethod;
@@ -121,6 +123,7 @@ export class SnakeEngine {
         this.changePortalMethod = changePortalMethod;
         this.cleanMethod = cleanMethod;
         this.pauseMethod = pauseMethod;
+        this.setScore = setScore;
 
         if(speed !== undefined) {
             this.speed = speed;
@@ -148,6 +151,8 @@ export class SnakeEngine {
     Start = () => {
         if(!this.gameActive && !this.gameEnded){
             this.gameActive = true;
+            if(this.setScore !== undefined)
+                this.setScore(0);
             this.NewLevel(0, 1);
         }
     }
@@ -331,6 +336,14 @@ export class SnakeEngine {
                     //if it eats an apple it
                     if(sameCoord(newHead, applePosition)) {
                         this.changeAppleMethod(applePosition, false);
+                        if(this.setScore !== undefined) {
+                            if(applesEaten < SnakeEngine.applesToAdvance) {
+                                this.setScore(oldValue => oldValue + appleValue);
+                            } else {
+                                this.setScore(oldValue => oldValue + Math.ceil(appleValue * 1.5));
+                            }
+                        }
+
                         applesEaten++;
 
                         if(emptyTiles.length > 0 && applesEaten === SnakeEngine.applesToAdvance) {
