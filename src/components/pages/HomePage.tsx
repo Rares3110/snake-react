@@ -33,7 +33,7 @@ const HomePage:React.FC = () => {
         <motion.button 
         whileHover={{scale: 1.02}}
         whileTap={{scale: 0.98}}
-        className="mt-10 flex items-center w-[380px] h-16 rounded-full 
+        className="mt-14 flex items-center w-[380px] h-16 rounded-full 
         bg-rose-700 select-none shadow-button"
         onClick={() => {
             navigate('/game');
@@ -49,7 +49,7 @@ const HomePage:React.FC = () => {
         </div>
         <div className="mt-2 text-2xl font-bold text-white">Score {score}</div>
 
-        <div className="h-[1200px]"/>   
+        <div className="h-[200px]"/>   
     </div>);
 }
 
