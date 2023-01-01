@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import NavBar from "../singular/NavBar";
 import {motion} from "framer-motion";
 import {ImEnlarge} from "react-icons/im";
@@ -10,6 +10,7 @@ import Pic3Header from "../../resources/png/avoid-obstacles.png";
 import { useNavigate } from "react-router-dom";
 
 const HomePage:React.FC = () => {
+    const [score, setScore] = useState(0);
     const navigate = useNavigate();
 
     return (<div className="flex flex-col w-full items-center">
@@ -43,8 +44,9 @@ const HomePage:React.FC = () => {
         </motion.button>
 
         <div className="w-[70vmin] mt-10">
-            <Snake/>
+            <Snake setScore={setScore}/>
         </div>
+        <div className="mt-2 text-2xl font-bold text-white">Score {score}</div>
 
         <div className="h-[1200px]"/>   
     </div>);
