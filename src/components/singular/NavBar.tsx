@@ -2,6 +2,7 @@ import React from "react";
 import {motion} from "framer-motion";
 import {GiSnakeTongue} from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import userData from "../../stores/UserData";
 
 const NavBar:React.FC = () => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ const NavBar:React.FC = () => {
             }}
             >
                 <GiSnakeTongue className="mr-2 mt-1 rounded-full border-2 w-9 h-9"/>
-                Login
+                {userData.user === null ? "Login" : userData.user.displayName}
             </motion.button>
 
             <div className="hidden sm:block mx-3 text-3xl mb-1">

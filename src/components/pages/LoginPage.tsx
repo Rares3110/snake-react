@@ -14,10 +14,13 @@ const LoginPage:React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        if(userData.user !== null)
+        userData.removeUser();
+        if(userData.user !== null) {
             navigate('/account');
+        }
     });
 
     const handleLogin = () => {
@@ -25,6 +28,8 @@ const LoginPage:React.FC = () => {
             login(email, password).then((result) => {
                 if(result === true) {
                     navigate('/');
+                } else {
+                    setError(true);
                 }
             });
         }
@@ -32,9 +37,11 @@ const LoginPage:React.FC = () => {
 
     const handleSignUp = () => {
         if(validateEmail(email) && validateFormValue(username) && validateFormValue(password) && password === password2) {
-            signUp(email, password).then((result) => {
+            signUp(email, username, password).then((result) => {
                 if(result === true) {
                     navigate('/');
+                } else {
+                    setError(true);
                 }
             });
         }
@@ -66,6 +73,7 @@ const LoginPage:React.FC = () => {
                 <motion.button 
                 onClick={() => {
                     setIsLogin(true);
+                    setError(false);
                     setUsername("");
                     setPassword2("");
                 }}
@@ -78,6 +86,7 @@ const LoginPage:React.FC = () => {
                 <motion.button 
                 onClick={() => {
                     setIsLogin(false);
+                    setError(false);
                 }}
                 className={"relative top-0 w-1/2 rounded-xl " + (!isLogin ?  "text-white" : "text-midnight-blue")}>
                     {!isLogin && <motion.div layoutId="formOption" className="absolute top-0 w-full h-full ml-[1px] rounded-xl border-midnight-blue
@@ -105,7 +114,12 @@ const LoginPage:React.FC = () => {
             {(!isLogin && password !== password2) &&
             <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Passwords don't match!</div>
             }
-            
+
+            {(error && isLogin) && 
+            <div className="absolute text-rose-800 bottom-[50px]">Email or password invalid!</div>}
+            {(error && !isLogin) && 
+            <div className="absolute text-rose-800 bottom-[50px]">Email already used!</div>}
+
             {isLogin ? 
             <motion.button
             onClick={handleLogin}
