@@ -9,11 +9,11 @@ const NavBar:React.FC = () => {
     return (<div className="fixed z-[200] top-0 w-full h-14 bg-darker-space-cadet
     shadow-navbar-darker-space-cadet">
         <div className="absolute right-4 flex flex-row-reverse items-center h-full
-        text-3xl font-semibold text-white bottom-[2px]">
+        text-2xl font-semibold text-white bottom-[2px]">
             <motion.button 
             whileHover={{scale: 1.05}}
             whileTap={{scale: 0.95}}
-            className="text-3xl font-semibold text-white flex items-center"
+            className="font-semibold text-white flex items-center"
             onClick={() => {
                 window.scrollTo(0, 0);
                 navigate('/login');
@@ -23,7 +23,7 @@ const NavBar:React.FC = () => {
                 Login
             </motion.button>
 
-            <div className="hidden sm:block mx-3 text-4xl mb-1">
+            <div className="hidden sm:block mx-3 text-3xl mb-1">
                 /
             </div>
 
@@ -35,7 +35,7 @@ const NavBar:React.FC = () => {
                 Leaderboards
             </motion.button>
 
-            <div className="hidden md:block mx-3 text-4xl mb-1">
+            <div className="hidden md:block mx-3 text-3xl mb-1">
                 /
             </div>
 
@@ -52,7 +52,7 @@ const NavBar:React.FC = () => {
             <motion.button 
             whileHover={{scale: 1.05}}
             whileTap={{scale: 0.95}}
-            className="text-4xl text-white font-semibold"
+            className="text-3xl text-white font-semibold"
             onClick={() => {
                 window.scrollTo(0, 0);
                 navigate('/');
