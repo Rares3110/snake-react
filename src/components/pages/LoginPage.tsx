@@ -62,7 +62,7 @@ const LoginPage:React.FC = () => {
     return (<div className="w-full flex flex-col items-center">
         <NavBar/>
 
-        <div className="relative mt-20 flex flex-col items-center w-[360px] h-[430px] rounded-lg bg-white shadow-login-form">
+        <div className="relative mt-20 flex flex-col items-center w-[360px] h-[440px] rounded-lg bg-white shadow-login-form">
             <img src={WaveImage} className="absolute top-0 h-48 w-full rotate-180 rounded-md" alt=""/>
             
             <div className="mt-5 text-3xl font-semibold text-white z-10">
@@ -116,9 +116,9 @@ const LoginPage:React.FC = () => {
             }
 
             {(error && isLogin) && 
-            <div className="absolute text-rose-800 bottom-[50px]">Email or password invalid!</div>}
+            <div className="absolute text-rose-800 bottom-[54px]">Email or password invalid!</div>}
             {(error && !isLogin) && 
-            <div className="absolute text-rose-800 bottom-[50px]">Email already used!</div>}
+            <div className="absolute text-rose-800 bottom-[54px]">Email already used!</div>}
 
             {isLogin ? 
             <motion.button
