@@ -6,13 +6,11 @@ import NavBar from "../singular/NavBar";
 const AccountPage:React.FC = () => {
     const navigate = useNavigate();
 
-    useEffect(() => { 
+    useEffect(() => {
         if(userData.user === null) {
             navigate('/login');
         }
     });
-
-    console.log(userData.user);
 
     return (<div>
         <NavBar/>;

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import WaveImage from "../../resources/png/wave-haikei.png";
 import { useNavigate } from "react-router-dom";
 import userData from "../../stores/UserData";
-import { Login, signUp } from "../../services/Login";
+import { login, signUp } from "../../services/Login";
 
 const LoginPage:React.FC = () => {
     const navigate = useNavigate();
@@ -21,8 +21,8 @@ const LoginPage:React.FC = () => {
     });
 
     const handleLogin = () => {
-        if(validateEmail(email) && password !== "") {
-            Login(email, password).then((result) => {
+        if(validateEmail(email) && validateFormValue(password)) {
+            login(email, password).then((result) => {
                 if(result === true) {
                     navigate('/');
                 }
@@ -31,7 +31,7 @@ const LoginPage:React.FC = () => {
     }
 
     const handleSignUp = () => {
-        if(validateEmail(email) && username !== "" && password !== "" && password === password2) {
+        if(validateEmail(email) && validateFormValue(username) && validateFormValue(password) && password === password2) {
             signUp(email, password).then((result) => {
                 if(result === true) {
                     navigate('/');
@@ -55,7 +55,7 @@ const LoginPage:React.FC = () => {
     return (<div className="w-full flex flex-col items-center">
         <NavBar/>
 
-        <div className="relative mt-20 flex flex-col items-center w-[360px] h-[400px] rounded-lg bg-white shadow-login-form">
+        <div className="relative mt-20 flex flex-col items-center w-[360px] h-[430px] rounded-lg bg-white shadow-login-form">
             <img src={WaveImage} className="absolute top-0 h-48 w-full rotate-180 rounded-md" alt=""/>
             
             <div className="mt-5 text-3xl font-semibold text-white z-10">
@@ -97,7 +97,15 @@ const LoginPage:React.FC = () => {
             }
             
             <TextBox className="mt-4" label="Password" setValue={setPassword} placeholder="••••••••••" type={TextBoxTypes.Password}/>
+            {!validateFormValue(password) &&
+            <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Password requires 6 characters!</div>
+            }
+            
             {!isLogin && <TextBox className="mt-4" label="Confirm Password" setValue={setPassword2} placeholder="••••••••••" type={TextBoxTypes.Password}/>}
+            {(!isLogin && password !== password2) &&
+            <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Passwords don't match!</div>
+            }
+            
             {isLogin ? 
             <motion.button
             onClick={handleLogin}
