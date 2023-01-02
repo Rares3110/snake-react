@@ -10,4 +10,8 @@
         -webkit-user-select: none;
         -ms-user-select: none;
     }
+
+    body {
+        @apply bg-[radial-gradient(#202746,#29335C)];
+    }
 }

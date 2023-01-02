@@ -10,7 +10,7 @@ import AppleNormalImage from "./resources/png/apple_normal.png";
 import PortalImage from "./resources/png/portal.png";
 
 const App: React.FC = () => {
-	return (<div className="bg-[radial-gradient(#202746,#29335C)]">
+	return (<div>
 
 		{/*load images on the start to have them ready in the game*/}
 		<img src={AppleGoldenImage} className="h-0 invisible" alt="" />

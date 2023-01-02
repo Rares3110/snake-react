@@ -17,7 +17,6 @@ const LoginPage:React.FC = () => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        userData.removeUser();
         if(userData.user !== null) {
             navigate('/account');
         }
@@ -62,8 +61,8 @@ const LoginPage:React.FC = () => {
     return (<div className="w-full flex flex-col items-center">
         <NavBar/>
 
-        <div className="relative mt-20 flex flex-col items-center w-[360px] h-[440px] rounded-lg bg-white shadow-login-form">
-            <img src={WaveImage} className="absolute top-0 h-48 w-full rotate-180 rounded-md" alt=""/>
+        <div className="relative mt-20 mb-[200px] flex flex-col items-center w-[360px] h-[480px] rounded-lg bg-white shadow-login-form">
+            <img src={WaveImage} className="absolute top-[-1px] h-48 w-full rotate-180 rounded-md" alt=""/>
             
             <div className="mt-5 text-3xl font-semibold text-white z-10">
                 Welcome to SuperSnake!
@@ -137,8 +136,6 @@ const LoginPage:React.FC = () => {
                 Sign up
             </motion.button>}
         </div>
-
-        <div className="h-[200px]"/>
     </div>);
 }
 
