@@ -13,7 +13,7 @@ class UserData {
 
     constructor() {
         makeAutoObservable(this);
-        makePersistable(this, { name: 'UserDataStore', properties: ['id', 'email', 'username', 'icon'], storage: window.localStorage });
+        makePersistable(this, { name: 'UserDataStore', properties: ['id', 'email', 'username', 'icon', 'maxScore', 'secondsForMaxScore', 'gamesPlayed'], storage: window.localStorage });
     }
 
     setUser(user: User) {

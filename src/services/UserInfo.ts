@@ -1,7 +1,8 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import userData from "../stores/UserData";
-import {auth, storage} from "./FirebaseConnection";
+import {auth, firestoreDB, storage} from "./FirebaseConnection";
 import { updateProfile } from "firebase/auth";
+import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 
 export const changeIcon = async(icon: File):Promise<boolean> => {
     if(userData.id !== undefined) {
@@ -26,6 +27,25 @@ export const setUsername = async(username: string) => {
             displayName: username
         }).then(() => {
             userData.setUsername(username);
+        });
+    }
+}
+
+export const addGame = (score: number, seconds: number) => {
+    if(userData.id !== undefined) {
+        addDoc(collection(firestoreDB, 'users/' + userData.id + '/scores'), {
+            score: score,
+            seconds: seconds,
+            date: Timestamp.fromMillis(Date.now())
+        }).then(() => {
+            userData.addGame(score, seconds);
+
+            if(userData.id !== undefined)
+                setDoc(doc(firestoreDB, 'users', userData.id), {
+                    maxScore: userData.maxScore,
+                    secondsForMaxScore: userData.secondsForMaxScore,
+                    gamesPlayed: userData.gamesPlayed
+                });
         });
     }
 }

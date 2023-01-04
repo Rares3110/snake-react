@@ -2,6 +2,8 @@ import { SnakePart } from "./SnakeParts";
 import { removeCoordFromArray, randomInteger, Coord, neighbour, sameCoord} from "./Utility";
 import { AppleTypes } from "../singular/Snake";
 import { LimitedQueue } from "./LimitedQueue";
+import userData from "../../stores/UserData";
+import { addGame } from "../../services/UserInfo";
 
 export class SnakeEngine {
     private static readonly spikeMaps = [
@@ -101,6 +103,9 @@ export class SnakeEngine {
     private pauseMethod: () => void;
     private setScore?: React.Dispatch<React.SetStateAction<number>>;
 
+    private score: number = 0;
+    private startedTime: number = 0;
+
     private canChangeDirection: boolean = false;
     private snakeInfo:{startDirection?: SnakePart.Direction, endDirection?: SnakePart.Direction}[][] = [];
     private currentHeadOfSnake: Coord = {x: 0, y: 0};
@@ -155,6 +160,8 @@ export class SnakeEngine {
                 this.setScore(0);
             this.NewLevel(0, 1);
         }
+
+        this.startedTime = Date.now();
     }
 
     //input of the user
@@ -338,9 +345,11 @@ export class SnakeEngine {
                         this.changeAppleMethod(applePosition, false);
                         if(this.setScore !== undefined) {
                             if(applesEaten < SnakeEngine.applesToAdvance) {
-                                this.setScore(oldValue => oldValue + appleValue);
+                                this.score += appleValue;
+                                this.setScore(this.score);
                             } else {
-                                this.setScore(oldValue => oldValue + Math.ceil(appleValue * 1.5));
+                                this.score += Math.ceil(appleValue * 1.5);
+                                this.setScore(this.score);
                             }
                         }
 
@@ -427,6 +436,10 @@ export class SnakeEngine {
                         });
                         this.NewLevel(level + 1, newAppleValue);
                     } else {
+                        if(userData.id !== undefined) {
+                            addGame(this.score, Math.floor((Date.now() - this.startedTime) / 1000));
+                        }
+
                         setTimeout(() => {
                             this.cleanMethod();
                         }, 1000);
