@@ -3,26 +3,12 @@ import { User } from "firebase/auth";
 import { makePersistable } from 'mobx-persist-store';
 
 class UserData {
-    user: User | null = null;
+    user?: User;
+    icon?: string;
 
     constructor() {
         makeAutoObservable(this);
-
-        makePersistable(this, {
-            name: 'UserDataStore',
-            properties: [
-                {
-                    key: 'user',
-                    serialize: (value) => {
-                        return value;
-                    },
-                    deserialize: (value) => {
-                        return value;
-                    },
-                },
-            ],
-            storage: window.localStorage,
-        });
+        makePersistable(this, { name: 'UserDataStore', properties: ['user', 'icon'], storage: window.localStorage });
     }
 
     setUser(user: User) {
@@ -30,7 +16,12 @@ class UserData {
     }
 
     removeUser() {
-        this.user = null;
+        this.user = undefined;
+        this.icon = undefined;
+    }
+
+    setIcon(icon: string) {
+        this.icon = icon;
     }
 }
 

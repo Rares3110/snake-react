@@ -11,7 +11,6 @@ import PortalImage from "./resources/png/portal.png";
 
 const App: React.FC = () => {
 	return (<div>
-
 		{/*load images on the start to have them ready in the game*/}
 		<img src={AppleGoldenImage} className="h-0 invisible" alt="" />
 		<img src={AppleNormalImage} className="h-0 invisible" alt="" />

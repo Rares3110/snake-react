@@ -17,7 +17,7 @@ const LoginPage:React.FC = () => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        if(userData.user !== null) {
+        if(userData.user !== undefined) {
             navigate('/account');
         }
     });
@@ -137,6 +137,6 @@ const LoginPage:React.FC = () => {
             </motion.button>}
         </div>
     </div>);
-}
+};
 
 export default LoginPage;

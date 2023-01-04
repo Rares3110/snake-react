@@ -371,7 +371,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
             <div className="text-white select-none font-bold text-[120px]">{pauseTime}{pauseTime === Math.floor(pauseTime) ? ".0" : ""}</div>
         </div>}
 
-        {!isGameRunning && <button className="absolute top-[-0.5px] w-[calc(100%+1px)] h-[calc(100%+1px)] bg-black bg-opacity-40 z-[60]
+        {!isGameRunning && <button className="absolute top-[-0.5px] w-[calc(100%+0.5px)] h-[calc(100%+0.75px)] bg-black bg-opacity-40 z-[60]
         flex items-center justify-center"
         onClick={handleStartGame}>
             <BsTriangleFill className="rotate-90 w-1/5 h-1/5 text-white text-opacity-80"/>

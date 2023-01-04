@@ -47,9 +47,9 @@ const HomePage:React.FC = () => {
         <div className="w-[70vmin] mt-10">
             <Snake setScore={setScore}/>
         </div>
-        <div className="mt-2 text-2xl font-bold text-white">Score {score}</div>
+        <div className="mt-2 text-4xl font-bold text-white">Score {score}</div>
 
-        <div className="h-[200px]"/>   
+        <div className="h-[200px]"/>
     </div>);
 }
 

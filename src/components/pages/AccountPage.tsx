@@ -5,13 +5,16 @@ import NavBar from "../singular/NavBar";
 import {GiSnakeTongue} from "react-icons/gi";
 import { motion } from "framer-motion";
 import { FaRegEdit } from "react-icons/fa";
+import { changeIcon, getIcon } from "../../services/UserInfo";
+import { logout } from "../../services/Login";
+import { observer } from "mobx-react";
 
-const AccountPage:React.FC = () => {
+const AccountPage:React.FC = observer(() => {
     const navigate = useNavigate();
     const changeIconRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if(userData.user === null) {
+        if(userData.user === undefined) {
             navigate('/login');
         }
     });
@@ -22,8 +25,27 @@ const AccountPage:React.FC = () => {
         <motion.div 
         whileHover="hover"
         className="relative roundex-full overflow-hidden border-white border-4 w-[300px] h-[300px] rounded-full mt-24">
+            {userData.icon === undefined ? 
             <GiSnakeTongue className="absolute top-0 w-full h-full rounded-full text-white"/>
-            <input ref={changeIconRef} type="file" accept=".jpeg,.jpg,.png" className="hidden"/>
+            : 
+            <img src={userData.icon} alt="" className="absolute top-0 w-full h-full rounded-full object-cover"/>}
+
+            <input ref={changeIconRef} type="file" accept=".jpeg,.jpg,.png" className="hidden" multiple={false}
+            onChange={(event) => {
+                if(event.target.files !== null && event.target.files.length > 0) {
+                    changeIcon(event.target.files[0]).then((value) => {
+                        if(value === true) {
+                            getIcon().then((value) => {
+                                if(value !== undefined) {
+                                    userData.setIcon(value);
+                                }
+                            });
+                        }
+                    });
+                }
+            }}
+            />
+
             <motion.button
             initial={{
                 opacity: 0
@@ -49,7 +71,13 @@ const AccountPage:React.FC = () => {
 
         <div className="text-5xl text-white font-semibold mt-4">{userData.user?.displayName}</div>
         <div className="text-xl text-white font-semibold mt-1">{userData.user?.email}</div>
+        <button onClick={() => {
+            logout();
+            navigate('/');
+        }}>
+            Logout
+        </button>
     </div>)
-}
+});
 
 export default AccountPage;
