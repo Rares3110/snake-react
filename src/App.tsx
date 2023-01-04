@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import AccountPage from "./components/pages/AccountPage";
 import FullSizeSnakePage from "./components/pages/FullSizeSnakePage";
