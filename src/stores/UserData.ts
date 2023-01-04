@@ -7,6 +7,9 @@ class UserData {
     username?: string;
     email?: string;
     icon?: string;
+    maxScore: number = 0;
+    secondsForMaxScore: number = 0;
+    gamesPlayed: number = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -35,11 +38,31 @@ class UserData {
         this.icon = icon;
     }
 
+    setGameStats(maxScore: number, secondsForMaxScore: number, gamesPlayed: number) {
+        this.maxScore = maxScore;
+        this.secondsForMaxScore = secondsForMaxScore;
+        this.gamesPlayed = gamesPlayed;
+    }
+
+    addGame(score: number, secondsForScore: number) {
+        if(this.maxScore < score) {
+            this.maxScore = score;
+            this.secondsForMaxScore = secondsForScore;
+        } else if(this.maxScore === score) {
+            this.secondsForMaxScore = Math.min(this.secondsForMaxScore, secondsForScore);
+        }
+
+        this.gamesPlayed++;
+    }
+
     removeUser() {
         this.id = undefined;
         this.email = undefined;
         this.username = undefined;
         this.icon = undefined;
+        this.maxScore = 0;
+        this.secondsForMaxScore = 0;
+        this.gamesPlayed = 0;
     }
 }
 
