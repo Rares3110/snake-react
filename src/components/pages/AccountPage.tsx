@@ -71,12 +71,16 @@ const AccountPage:React.FC = observer(() => {
 
         <div className="text-5xl text-white font-semibold mt-4">{userData.user?.displayName}</div>
         <div className="text-xl text-white font-semibold mt-1">{userData.user?.email}</div>
-        <button onClick={() => {
+        <motion.button
+        whileHover={{scale: 1.02}}
+        whileTap={{scale: 0.98}}
+        className="bg-rose-800 text-white font-semibold text-3xl pb-2 pt-1 w-[150px] rounded-xl shadow-button mt-4"
+        onClick={() => {
             logout();
             navigate('/');
         }}>
             Logout
-        </button>
+        </motion.button>
     </div>)
 });
 
