@@ -6,8 +6,6 @@ import userData from "../../stores/UserData";
 import { observer } from "mobx-react";
 
 const NavBar:React.FC = observer(() => {
-    const user = userData.user;
-    const icon = userData.icon;
     const navigate = useNavigate();
 
     return (<div className="fixed z-[200] top-0 w-full h-14 bg-darker-space-cadet
@@ -23,10 +21,10 @@ const NavBar:React.FC = observer(() => {
                 navigate('/login');
             }}
             >
-                {icon === undefined ? 
+                {userData.icon === undefined ? 
                 <GiSnakeTongue className="mr-2 mt-1 rounded-full border-2 w-9 h-9"/> : 
-                <img className="mr-2 mt-1 rounded-full border-2 w-9 h-9 object-cover" src={icon} alt=""/>}
-                {user === undefined ? "Login" : user.displayName}
+                <img className="mr-2 mt-1 rounded-full border-2 w-9 h-9 object-cover" src={userData.icon} alt=""/>}
+                {userData.id === undefined ? "Login" : userData.username}
             </motion.button>
 
             <div className="hidden sm:block mx-3 text-3xl mb-1">

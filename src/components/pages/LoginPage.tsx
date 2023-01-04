@@ -10,14 +10,14 @@ import { login, signUp } from "../../services/Login";
 const LoginPage:React.FC = () => {
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
-    const [username, setUsername] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        if(userData.user !== undefined) {
+        if(userData.id !== undefined) {
             navigate('/account');
         }
     });
@@ -35,8 +35,8 @@ const LoginPage:React.FC = () => {
     }
 
     const handleSignUp = () => {
-        if(validateEmail(email) && validateFormValue(username) && validateFormValue(password) && password === password2) {
-            signUp(email, username, password).then((result) => {
+        if(validateEmail(email) && validateFormValue(name) && validateFormValue(password) && password === password2) {
+            signUp(email, name, password).then((result) => {
                 if(result === true) {
                     navigate('/');
                 } else {
@@ -73,7 +73,7 @@ const LoginPage:React.FC = () => {
                 onClick={() => {
                     setIsLogin(true);
                     setError(false);
-                    setUsername("");
+                    setName("");
                     setPassword2("");
                 }}
                 className={"relative top-0 w-1/2 rounded-xl " + (isLogin ?  "text-white" : "text-midnight-blue")}>
@@ -99,8 +99,8 @@ const LoginPage:React.FC = () => {
             <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Email required!</div> 
             }
             
-            {!isLogin && <TextBox className="mt-4" label="Username" setValue={setUsername} placeholder="Username"/>}
-            {(!isLogin && !validateFormValue(username)) &&
+            {!isLogin && <TextBox className="mt-4" label="Username" setValue={setName} placeholder="Username"/>}
+            {(!isLogin && !validateFormValue(name)) &&
             <div className="text-rose-800 text-sm w-[230px] h-3 z-[20]">Username requires 6 characters!</div>
             }
             

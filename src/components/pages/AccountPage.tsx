@@ -1,23 +1,31 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userData from "../../stores/UserData";
 import NavBar from "../singular/NavBar";
-import {GiSnakeTongue} from "react-icons/gi";
 import { motion } from "framer-motion";
-import { FaRegEdit } from "react-icons/fa";
-import { changeIcon, getIcon } from "../../services/UserInfo";
+import { changeIcon, getIcon, setUsername } from "../../services/UserInfo";
 import { logout } from "../../services/Login";
 import { observer } from "mobx-react";
+
+import { GiSnakeTongue } from "react-icons/gi";
+import { FaRegEdit } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import { IoCheckmarkSharp } from "react-icons/io5";
 
 const AccountPage:React.FC = observer(() => {
     const navigate = useNavigate();
     const changeIconRef = useRef<HTMLInputElement>(null);
+    const [name, setName] = useState<string>(userData.username ?? "");
 
     useEffect(() => {
-        if(userData.user === undefined) {
+        if(userData.id === undefined) {
             navigate('/login');
         }
     });
+
+    const validateFormValue = (value: string) => {
+        return value.match(/(?=.*[0-9a-zA-Z]).{6,}/);
+    }
 
     return (<div className="flex flex-col items-center w-full">
         <NavBar/>
@@ -68,9 +76,44 @@ const AccountPage:React.FC = observer(() => {
                 <FaRegEdit className="text-teal-700 w-1/4 h-1/4 ml-5"/>
             </motion.button>
         </motion.div>
+        
+        <div className="relative w-[300px]">
+            <input type="text" 
+            style={{
+                borderBottomWidth: (name !== userData.username) ? "4px" : "",
+                marginBottom: (name !== userData.username) ? "-4px" : ""
+            }}
+            className="text-5xl text-center w-full bg-transparent text-white font-semibold mt-4
+            outline-none border-white focus:border-b-4 focus:mb-[-4px]" 
+            value={name}
+            onChange={(event) => {
+                setName(event.target.value);
+            }}
+            />
+            {(name !== userData.username && validateFormValue(name)) ? <motion.button
+            className="absolute right-[-50px] top-[25px] w-12 h-12"
+            whileHover={{scale: 1.2}}
+            whileTap={{scale: 0.9}}
+            onClick={() => setUsername(name)}
+            >
+                <IoCheckmarkSharp className="w-full h-full text-green-600"/>
+            </motion.button> : null}
 
-        <div className="text-5xl text-white font-semibold mt-4">{userData.user?.displayName}</div>
-        <div className="text-xl text-white font-semibold mt-1">{userData.user?.email}</div>
+            {(name !== userData.username) ? <motion.button
+            className="absolute left-[-50px] top-[30px] w-12 h-12"
+            whileHover={{scale: 1.2}}
+            whileTap={{scale: 0.9}}
+            onClick={() => setName(userData.username ?? "")}
+            >
+                <IoClose className="w-full h-full text-red-500"/>
+            </motion.button> : null}
+        </div>
+        
+        {!validateFormValue(name) ?
+        <div className="text-red-500 mt-1">Username requires 6 characters!</div>: null}
+
+        <div className="text-xl text-white font-semibold mt-1">{userData.email}</div>
+        
         <motion.button
         whileHover={{scale: 1.02}}
         whileTap={{scale: 0.98}}

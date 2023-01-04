@@ -5,12 +5,11 @@ import { getIcon } from "./UserInfo";
 
 export const signUp = async(email: string, username: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-        userData.setUser(userCredential.user);
-
         updateProfile(userCredential.user, {
             displayName: username
         });
-        
+
+        userData.setUser(userCredential.user);
         return true;
     }).catch(() => {
         return false;
