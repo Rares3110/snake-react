@@ -77,7 +77,7 @@ const AccountPage:React.FC = observer(() => {
                         if(event.target.files !== null && event.target.files.length > 0) {
                             changeIcon(event.target.files[0]).then((value) => {
                                 if(value === true) {
-                                    getIcon().then((value) => {
+                                    getIcon(userData.id).then((value) => {
                                         if(value !== undefined) {
                                             userData.setIcon(value);
                                         }

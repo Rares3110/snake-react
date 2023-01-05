@@ -13,9 +13,9 @@ export const changeIcon = async(icon: File):Promise<boolean> => {
     }
 }
 
-export const getIcon = async() => {
-    if(userData.id !== undefined) {
-        return await getDownloadURL(ref(storage, 'icons/' + userData.id));
+export const getIcon = async(id: string | undefined) => {
+    if(id !== undefined) {
+        return await getDownloadURL(ref(storage, 'icons/' + id));
     } else {
         return undefined;
     }

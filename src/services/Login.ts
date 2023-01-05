@@ -28,7 +28,7 @@ export const login = async(email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
         userData.setUser(userCredential.user);
 
-        getIcon().then((value) => {
+        getIcon(userData.id).then((value) => {
             if(value !== undefined) {
                 userData.setIcon(value);
             }
