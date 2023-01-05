@@ -51,6 +51,22 @@ const NavBar:React.FC = observer(() => {
             whileHover={{scale: 1.05}}
             whileTap={{scale: 0.95}}
             className="hidden md:block"
+            onClick={() => {
+                navigate('/');
+                setTimeout(() => {
+                    let element = document.getElementById('Rules');
+
+                    if(element) {
+                        let elementPosition = element.getBoundingClientRect().top;
+                        let offsetPosition = elementPosition + window.pageYOffset - 70;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                       });
+                    }
+                }, 100);
+            }}
             >
                 Rules
             </motion.button>

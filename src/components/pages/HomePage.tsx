@@ -66,7 +66,7 @@ const HomePage:React.FC = () => {
             <div className="text-white text-2xl text-center w-full mr-10">Go to the Leaderboard!</div>
         </motion.button>
 
-        <h1 className="text-white font-semibold text-4xl border-b-4 pb-1 border-white mt-14">How to play</h1>
+        <h1 id="Rules" className="text-white font-semibold text-4xl border-b-4 pb-1 border-white mt-14">How to play</h1>
 
         <div className="flex flex-col items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[600px]">
             <img className="w-64 h-64 object-cover object-top" src={Pic1Header} alt=""/>
