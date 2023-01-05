@@ -35,6 +35,10 @@ const NavBar:React.FC = observer(() => {
             whileHover={{scale: 1.05}}
             whileTap={{scale: 0.95}}
             className="hidden sm:block"
+            onClick={() => {
+                window.scrollTo(0, 0);
+                navigate('/leaderboards');
+            }}
             >
                 Leaderboards
             </motion.button>

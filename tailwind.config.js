@@ -9,7 +9,8 @@ module.exports = {
 				'russian-violet': '#171140',
 				'midnight-blue': '#231961',
 				'space-cadet': '#29335C',
-				'darker-space-cadet': '#202746'
+				'darker-space-cadet': '#202746',
+				'gold': '#FFD700'
 			},
 			boxShadow: {
 				'navbar-darker-space-cadet': '0px 6px 10px 4px rgba(25, 30, 56, 0.3)',
