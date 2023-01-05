@@ -1,8 +1,42 @@
 import { motion } from "framer-motion";
+import { observer } from "mobx-react";
 import React, {useEffect, useState} from "react";
+import { GiSnakeTongue } from "react-icons/gi";
 import { TbArrowsMinimize } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import userData from "../../stores/UserData";
 import Snake from "../singular/Snake";
+
+const LoginInfoSmall:React.FC = observer(() => {
+    const navigate = useNavigate();
+
+    return (<div>
+        {userData.id === undefined ? <motion.button className="h-14 flex items-center w-[144px]
+        bg-blue-500 rounded-2xl shadow-button mt-4 justify-center"
+        whileHover={{scale: 1.02}}
+        whileTap={{scale: 0.98}}
+        onClick={() => {
+            navigate('/login');
+            window.scrollTo(0, 0);
+        }}
+        >
+            <div className="text-2xl ml-1 mr-1">Login!!</div>
+        </motion.button>
+        :
+        <motion.button className="h-14 flex items-center w-[144px]
+        bg-green-500 rounded-2xl shadow-button mt-4 justify-center"
+        whileHover={{scale: 1.02}}
+        whileTap={{scale: 0.98}}
+        onClick={() => {
+            navigate('/account');
+            window.scrollTo(0, 0);
+        }}
+        >
+            <GiSnakeTongue className="w-8 h-8"/>
+            <div className="text-2xl ml-1 mr-1">Account</div>
+        </motion.button>}
+    </div>);
+});
 
 const FullSizeSnakePage:React.FC = () => {
     const [showSideInfo, setShowSideInfo] = useState<boolean>(() => {
@@ -63,17 +97,19 @@ const FullSizeSnakePage:React.FC = () => {
             <div>Score</div>
             <div className="mt-2">{score}</div>
                 
-            <motion.button className="h-14 flex items-center
-            bg-rose-700 rounded-2xl shadow-button mt-4"
+            <motion.button className="h-14 flex items-center w-[144px]
+            bg-rose-700 rounded-2xl shadow-button mt-4 justify-center"
             whileHover={{scale: 1.02}}
             whileTap={{scale: 0.98}}
             onClick={() => {
                 navigate('/');
             }}
             >
-                <TbArrowsMinimize className="w-[50%] h-[50%] text-white ml-1"/>
+                <TbArrowsMinimize className="w-6 h-6 mt-[2px] text-white ml-1"/>
                 <div className="text-2xl ml-1 mr-1">Minimize</div>
             </motion.button>
+
+            <LoginInfoSmall/>
         </div>}
     </div>);
 }

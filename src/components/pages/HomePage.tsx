@@ -6,12 +6,22 @@ import { useNavigate } from "react-router-dom";
 
 import {ImEnlarge} from "react-icons/im";
 import {MdLeaderboard} from "react-icons/md";
-import {AiOutlineArrowDown, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineArrowUp, AiOutlineEnter} from "react-icons/ai";
+import {AiOutlineArrowDown, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineArrowUp, AiOutlineEnter, AiOutlineInfoCircle} from "react-icons/ai";
 import Pic1Header from "../../resources/png/gather-points.png";
 import Pic2Header from "../../resources/png/show-black-hole.png";
 import Pic3Header from "../../resources/png/avoid-obstacles.png";
 import { BsFillMouse2Fill } from "react-icons/bs";
-import InfoLogin from "../singular/InfoLogin";
+import userData from "../../stores/UserData";
+import { observer } from "mobx-react";
+
+const InfoLogin:React.FC = observer(() => {
+    return (<div>
+        {userData.id === undefined ? <div className="flex items-center justify-around text-blue-500 bg-black bg-opacity-50 text-xl max-w-[400px] mt-4 mb-[-20px] rounded-2xl">
+            <AiOutlineInfoCircle className="h-12 w-12 mr-3 ml-2"/>
+            Login or create an account, before starting the game, to save the score!
+        </div> : null}
+    </div>);
+});
 
 const HomePage:React.FC = () => {
     const [score, setScore] = useState(0);
