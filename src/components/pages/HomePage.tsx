@@ -11,6 +11,7 @@ import Pic1Header from "../../resources/png/gather-points.png";
 import Pic2Header from "../../resources/png/show-black-hole.png";
 import Pic3Header from "../../resources/png/avoid-obstacles.png";
 import { BsFillMouse2Fill } from "react-icons/bs";
+import InfoLogin from "../singular/InfoLogin";
 
 const HomePage:React.FC = () => {
     const [score, setScore] = useState(0);
@@ -51,6 +52,8 @@ const HomePage:React.FC = () => {
             <Snake setScore={setScore}/>
         </div>
         <div className="mt-2 text-4xl font-bold text-white">Score {score}</div>
+        
+        <InfoLogin/>
 
         <motion.button 
         whileHover={{scale: 1.02}}
@@ -145,6 +148,6 @@ const HomePage:React.FC = () => {
             </div>
         </div>
     </div>);
-}
+};
 
 export default HomePage;
