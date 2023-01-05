@@ -28,7 +28,7 @@ const FullSizeSnakePage:React.FC = () => {
         return () => {
             window.removeEventListener("resize", handleResize);
         };
-    });
+    }, []);
 
     return (<div 
     style={{overflowY: showSideInfo ? 'hidden' : 'auto'}}  

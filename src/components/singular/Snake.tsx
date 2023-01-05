@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import { SnakePart } from "../utility/SnakeParts";
 import { Coord } from "../utility/Utility";
@@ -229,7 +229,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
         setIsGameRunning(true);
     }
 
-    const clean = () => {
+    const clean = useCallback(() => {
         pause();
         setTimeout(() => {
             setTiles(oldMap => oldMap.map(() => {
@@ -244,7 +244,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
 
             setIsGameRunning(false);
         }, 2000);
-    }
+    }, []);
 
     const pause = () => {
         setPauseTime(pauseTimeStart);
@@ -261,26 +261,26 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
     //on enter scroll to game and start
     const gridRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        const handleEnterKeyDown = (event: KeyboardEvent) => {
-            if(event.code === 'Enter') {
-                event.preventDefault();
-                if(gridRef.current !== null && !isGameRunning) {
-                    gridRef.current.scrollIntoView({
-                        block: 'center'
-                    });
+    const handleEnterKeyDown = useCallback((event: KeyboardEvent) => {
+        if(event.code === 'Enter') {
+            event.preventDefault();
+            if(gridRef.current !== null && !isGameRunning) {
+                gridRef.current.scrollIntoView({
+                    block: 'center'
+                });
 
-                    new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause, setScore).Start();
-                    setIsGameRunning(true);
-                }
+                new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause, setScore).Start();
+                setIsGameRunning(true);
             }
         }
+    }, [clean, isGameRunning, setScore]);
 
+    useEffect(() => {
         document.addEventListener('keydown', handleEnterKeyDown);
         return () => {
             document.removeEventListener('keydown', handleEnterKeyDown);
         }
-    })
+    }, [handleEnterKeyDown]);
 
     return (<div 
     ref={gridRef}

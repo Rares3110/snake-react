@@ -52,21 +52,39 @@ export const addGame = (score: number, seconds: number) => {
 
 var lastHistoryRecord: QueryDocumentSnapshot<DocumentData>;
 var historyNotFull: boolean;
-export const getHistory = async(initial: boolean = true) => {
+export interface HistoryElement {
+    score: number,
+    seconds: number,
+    date: Date
+}
+export const getHistory = async(initial: boolean = true, toReturn: number):Promise<HistoryElement[]> => {
     if(userData.id !== undefined && initial) {
 
         return getDocs(query(
             collection(firestoreDB, 'users/' + userData.id + '/scores'), 
             orderBy("date", "desc"),
-            limit(10)
+            limit(toReturn)
         )).then((docSnap) => {
+
+            if(docSnap.docs.length < toReturn) {
+                historyNotFull = false;
+            } else {
+                historyNotFull = true;
+            }
+
             if(docSnap.docs.length > 0) {
                 lastHistoryRecord = docSnap.docs[docSnap.docs.length - 1];
-                historyNotFull = true;
-                return docSnap.docs.map(doc => doc.data());
+                return docSnap.docs.map((doc) => doc.data()).map((value) => {
+                    return {
+                        score: value.score,
+                        seconds: value.seconds,
+                        date: value.date.toDate()
+                    };
+                });
             } else {
                 return [];
             }
+
         });
 
     } else if(userData.id !== undefined && historyNotFull) {
@@ -75,15 +93,26 @@ export const getHistory = async(initial: boolean = true) => {
             collection(firestoreDB, 'users/' + userData.id + '/scores'), 
             orderBy("date", "desc"),
             startAfter(lastHistoryRecord),
-            limit(10)
+            limit(toReturn)
         )).then((docSnap) => {
+
+            if(docSnap.docs.length < toReturn) {
+                historyNotFull = false;
+           }
+
             if(docSnap.docs.length > 0) {
                 lastHistoryRecord = docSnap.docs[docSnap.docs.length - 1];
-                return docSnap.docs.map(doc => doc.data());
+                return docSnap.docs.map((doc) => doc.data()).map((value) => {
+                    return {
+                        score: value.score,
+                        seconds: value.seconds,
+                        date: value.date.toDate()
+                    };
+                });
             } else {
-                historyNotFull = false;
                 return [];
             }
+
         });
 
     } else {
