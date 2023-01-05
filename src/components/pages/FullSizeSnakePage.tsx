@@ -16,7 +16,7 @@ const LoginInfoSmall:React.FC = observer(() => {
         whileHover={{scale: 1.02}}
         whileTap={{scale: 0.98}}
         onClick={() => {
-            navigate('/login');
+            navigate('/login/1');
             window.scrollTo(0, 0);
         }}
         >
@@ -37,6 +37,38 @@ const LoginInfoSmall:React.FC = observer(() => {
         </motion.button>}
     </div>);
 });
+
+const LoginInfoLarge:React.FC = observer(() => {
+    const navigate = useNavigate();
+
+    return (<div>
+        {userData.id === undefined ?
+        <motion.button 
+        whileHover={{scale: 1.02}}
+        whileTap={{scale: 0.98}}
+        className="mt-4 w-[310px] h-16 rounded-full mb-32
+        bg-blue-500 select-none shadow-button text-white text-2xl text-center"
+        onClick={() => {
+            navigate('/login/1');
+        }}
+        >
+            Login to save your score!
+        </motion.button>
+        :
+        <motion.button 
+        whileHover={{scale: 1.02}}
+        whileTap={{scale: 0.98}}
+        className="mt-4 flex items-center justify-center w-[310px] h-16 rounded-full 
+        bg-green-500 select-none shadow-button text-white mb-32"
+        onClick={() => {
+            navigate('/account');
+        }}
+        >
+            <GiSnakeTongue className="w-8 h-8"/>
+            <div className="text-2xl ml-1 mr-1">Go to account</div>
+        </motion.button>}
+    </div>)
+})
 
 const FullSizeSnakePage:React.FC = () => {
     const [showSideInfo, setShowSideInfo] = useState<boolean>(() => {
@@ -88,8 +120,8 @@ const FullSizeSnakePage:React.FC = () => {
                 <TbArrowsMinimize className="w-10 h-10 mt-[2px] text-white ml-6 mr-1"/>
                 <div className="text-white text-2xl text-center w-full mr-6">Back to normal mode</div>
             </motion.button>
-
-            <div className="h-[100px]"/>
+            
+            <LoginInfoLarge/>
         </div>}
 
         {showSideInfo && <div className="absolute top-4 right-3 flex flex-col items-center

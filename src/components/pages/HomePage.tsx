@@ -3,6 +3,8 @@ import NavBar from "../singular/NavBar";
 import {motion} from "framer-motion";
 import Snake from "../singular/Snake";
 import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react";
+import userData from "../../stores/UserData";
 
 import {ImEnlarge} from "react-icons/im";
 import {MdLeaderboard} from "react-icons/md";
@@ -11,8 +13,7 @@ import Pic1Header from "../../resources/png/gather-points.png";
 import Pic2Header from "../../resources/png/show-black-hole.png";
 import Pic3Header from "../../resources/png/avoid-obstacles.png";
 import { BsFillMouse2Fill } from "react-icons/bs";
-import userData from "../../stores/UserData";
-import { observer } from "mobx-react";
+import BuildImage from "../../resources/svg/undraw_building_blocks.svg";
 
 const InfoLogin:React.FC = observer(() => {
     return (<div>
@@ -44,10 +45,15 @@ const HomePage:React.FC = () => {
             </div>
         </div>
 
+        <div className="flex items-center justify-around text-blue-500 bg-black bg-opacity-50 text-xl max-w-[410px] my-8 rounded-2xl">
+            <img src={BuildImage} alt="" className="h-20 w-20 mr-3 ml-2"/>
+            <div>At the moment, any user will need a <span className="text-gold">keyboard</span> to play SuperSnake! Gestures are not yet available but will be in the near future.</div>
+        </div>
+
         <motion.button 
         whileHover={{scale: 1.02}}
         whileTap={{scale: 0.98}}
-        className="mt-14 flex items-center w-[380px] h-16 rounded-full 
+        className="flex items-center w-[380px] h-16 rounded-full 
         bg-rose-700 select-none shadow-button"
         onClick={() => {
             navigate('/game');
@@ -90,7 +96,7 @@ const HomePage:React.FC = () => {
 
         <div className="flex flex-col-reverse items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[600px]">
             <div className="text-white text-2xl w-full sm:w-auto">
-                After you gather a certain ammount of apples from a level, a <span className="text-red-700">portal</span> will appear! Entering the portal will teleport the snake to the next level, losing it's size.
+                After you gather a certain amount of apples from a level, a <span className="text-red-700">portal</span> will appear! Entering the portal will teleport the snake to the next level, also losing it's size in the process.
             </div>
             <img className="w-64 h-64 object-cover object-top" src={Pic2Header} alt=""/>
         </div>

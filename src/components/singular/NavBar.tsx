@@ -18,7 +18,11 @@ const NavBar:React.FC = observer(() => {
             className="font-semibold text-white flex items-center"
             onClick={() => {
                 window.scrollTo(0, 0);
-                navigate('/login');
+                if(userData.id === undefined) {
+                    navigate('/login/0');
+                } else {
+                    navigate('/account');
+                }
             }}
             >
                 {userData.icon === undefined ? 

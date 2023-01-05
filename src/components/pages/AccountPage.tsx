@@ -24,7 +24,7 @@ const AccountPage:React.FC = observer(() => {
 
     useEffect(() => {
         if(userData.id === undefined) {
-            navigate('/login');
+            navigate('/login/0');
         } else {
             if(searchStarted.current === false) {
                 searchStarted.current = true;

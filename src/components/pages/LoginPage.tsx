@@ -3,12 +3,13 @@ import NavBar from "../singular/NavBar";
 import { TextBox, TextBoxTypes } from "../utility/TextBox";
 import { motion } from "framer-motion";
 import WaveImage from "../../resources/png/wave-haikei.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import userData from "../../stores/UserData";
 import { login, signUp } from "../../services/Login";
 
 const LoginPage:React.FC = () => {
     const navigate = useNavigate();
+    const params = useParams();
     const [isLogin, setIsLogin] = useState(true);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -26,7 +27,14 @@ const LoginPage:React.FC = () => {
         if(validateEmail(email) && validateFormValue(password)) {
             login(email, password).then((result) => {
                 if(result === true) {
-                    navigate('/');
+                    if(params.index === '0') {
+                        navigate('/');
+                    }
+                    switch(params.index) {
+                        case '0': navigate('/'); break;
+                        case '1': navigate('/game'); break;
+                        default: break;
+                    }
                 } else {
                     setError(true);
                 }

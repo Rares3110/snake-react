@@ -20,7 +20,7 @@ const App: React.FC = () => {
 			<Route path='/game' element={<FullSizeSnakePage />} />
 			<Route path='/leaderboards' element={<LeaderboardsPage />} />
 			<Route path='/account' element={<AccountPage />} />
-			<Route path='/login' element={<LoginPage />} />
+			<Route path='/login/:index' element={<LoginPage />} />
 			<Route path="*" element={<Navigate to="/" />} />
 		</Routes>
 	</div>);
