@@ -72,6 +72,11 @@ export namespace SnakePart {
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
         className="relative w-full h-full flex items-center justify-center z-10">
+            {/*optional, only for showing the circle at the other end*/}
+            <div 
+            style={{backgroundColor: props.skinColor ?? "#1e40af"}}
+            className="absolute left-[-40%] w-[80%] h-[80%] rounded-full"/>
+
             <motion.svg
             width="100%"
             height="180%"
@@ -369,6 +374,11 @@ export namespace SnakePart {
             transform: `scaleX(${myScaleX}) scaleY(${myScaleY}) rotate(${rotation}deg)`
         }}
         className="relative w-full h-full flex items-center z-10">
+            {/*optional, only for showing the circle at the other end*/}
+            <div
+            style={{backgroundColor: props.skinColor ?? "#1e40af"}}
+            className="absolute top-[-40%] left-[10%] w-[80%] h-[80%] rounded-full"/>
+
             <motion.svg
             className="mt-[70%]"
             width="100%"
