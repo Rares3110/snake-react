@@ -344,6 +344,8 @@ export class SnakeEngine {
                         this.snakeInfo[tail.y][tail.x].endDirection,
                         this.speed);
 
+                    this.canChangeDirection = true;
+                    this.checkKeyActive();
                     return;
                 }
 
