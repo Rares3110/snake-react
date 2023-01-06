@@ -1,8 +1,7 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import userData from "../stores/UserData";
-import {auth, firestoreDB, storage} from "./FirebaseConnection";
-import { updateProfile } from "firebase/auth";
-import { addDoc, collection, doc, DocumentData, getDocs, limit, orderBy, query, QueryDocumentSnapshot, setDoc, startAfter, Timestamp } from "firebase/firestore";
+import {firestoreDB, storage} from "./FirebaseConnection";
+import { addDoc, collection, doc, DocumentData, getDocs, limit, orderBy, query, QueryDocumentSnapshot, updateDoc, startAfter, Timestamp } from "firebase/firestore";
 
 export const changeIcon = async(icon: File):Promise<boolean> => {
     if(userData.id !== undefined) {
@@ -22,9 +21,9 @@ export const getIcon = async(id: string | undefined) => {
 }
 
 export const setUsername = async(username: string) => {
-    if(auth.currentUser !== null) {
-        updateProfile(auth.currentUser, {
-            displayName: username
+    if(userData.id !== undefined) {
+        updateDoc(doc(firestoreDB, 'users', userData.id), {
+            username: username
         }).then(() => {
             userData.setUsername(username);
         });
@@ -41,7 +40,7 @@ export const addGame = (score: number, seconds: number) => {
             userData.addGame(score, seconds);
 
             if(userData.id !== undefined)
-                setDoc(doc(firestoreDB, 'users', userData.id), {
+                updateDoc(doc(firestoreDB, 'users', userData.id), {
                     maxScore: userData.maxScore,
                     secondsForMaxScore: userData.secondsForMaxScore,
                     gamesPlayed: userData.gamesPlayed
@@ -118,4 +117,32 @@ export const getHistory = async(initial: boolean = true, toReturn: number):Promi
     } else {
         return [];
     }
+}
+
+export interface TopUserInfo {
+    id: string,
+    maxScore: number,
+    secondsForMaxScore: number,
+    gamesPlayed: number
+}
+export const getTopUsersByScore = async():Promise<TopUserInfo[]> => {
+    return getDocs(query(
+        collection(firestoreDB, 'users'), 
+        orderBy("maxScore", "desc"),
+        orderBy("secondsForMaxScore"),
+        limit(30)
+    )).then((docSnap) => {
+        return docSnap.docs.map((doc) => {
+            let value = doc.data();
+
+            return {
+                id: doc.id,
+                maxScore: value.maxScore,
+                secondsForMaxScore: value.secondsForMaxScore,
+                gamesPlayed: value.gamesPlayed
+            }
+        });
+    }).catch(() => {
+        return [];
+    });
 }

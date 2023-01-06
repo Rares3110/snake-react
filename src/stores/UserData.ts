@@ -19,7 +19,6 @@ class UserData {
     setUser(user: User) {
         this.id = user.uid;
         this.email = user.email ?? undefined;
-        this.username = user.displayName ?? undefined;
     }
 
     setId(id: string) {

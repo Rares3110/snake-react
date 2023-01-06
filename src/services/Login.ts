@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, firestoreDB } from "./FirebaseConnection";
 import userData from "../stores/UserData";
 import { getIcon } from "./UserInfo";
@@ -6,16 +6,14 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const signUp = async(email: string, username: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-        updateProfile(userCredential.user, {
-            displayName: username
-        }).then(() => {
-            userData.setUser(userCredential.user);
-        });
-
         setDoc(doc(firestoreDB, "users", userCredential.user.uid), {
+            username: username,
             maxScore: 0,
             secondsForMaxScore: 0,
             gamesPlayed: 0
+        }).then(() => {
+            userData.setUser(userCredential.user);
+            userData.setUsername(username);
         });
         
         return true;
@@ -38,6 +36,8 @@ export const login = async(email: string, password: string) => {
             const values = rez.data();
 
             if(values) {
+                userData.setUsername(values.username);
+
                 userData.setGameStats(
                     values.maxScore,
                     values.secondsForMaxScore,

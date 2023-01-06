@@ -14,7 +14,6 @@ import Pic2Header from "../../resources/png/show-black-hole.png";
 import Pic3Header from "../../resources/png/avoid-obstacles.png";
 import { BsFillMouse2Fill } from "react-icons/bs";
 import BuildImage from "../../resources/svg/undraw_building_blocks.svg";
-import { SnakePart } from "../utility/SnakeParts";
 
 const InfoLogin:React.FC = observer(() => {
     return (<div>
@@ -163,12 +162,6 @@ const HomePage:React.FC = () => {
             <div className="text-white text-2xl w-[320px] sm:w-[540px] mt-4">
                 Press either <span className="text-green-500">W, A, S, D</span> or the <span className="text-green-500">arrows</span> to change the direction of the snake.
             </div>
-        </div>
-
-        <div className="w-60 h-60 bg-yellow-400 mt-20 mb-20">
-            <SnakePart.SnakeStraightLeave duration={10}
-            startDirection={SnakePart.Direction.Up}
-            endDirection={SnakePart.Direction.Down}/>
         </div>
     </div>);
 };
