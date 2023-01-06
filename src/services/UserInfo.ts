@@ -121,6 +121,8 @@ export const getHistory = async(initial: boolean = true, toReturn: number):Promi
 
 export interface TopUserInfo {
     id: string,
+    icon?: string,
+    username: string,
     maxScore: number,
     secondsForMaxScore: number,
     gamesPlayed: number
@@ -137,6 +139,7 @@ export const getTopUsersByScore = async():Promise<TopUserInfo[]> => {
 
             return {
                 id: doc.id,
+                username: value.username,
                 maxScore: value.maxScore,
                 secondsForMaxScore: value.secondsForMaxScore,
                 gamesPlayed: value.gamesPlayed
