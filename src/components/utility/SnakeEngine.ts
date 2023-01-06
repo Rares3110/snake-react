@@ -112,6 +112,11 @@ export class SnakeEngine {
     private currentHeadOfSnake: Coord = {x: 0, y: 0};
     private lastCall: number = 0;
 
+    private leftKeyActive: boolean = false;
+    private upKeyActive: boolean = false;
+    private rightKeyActive: boolean = false;
+    private downKeyActive: boolean = false;
+
     //getting all the methods used to change how the board looks
     constructor(
         changeSpikesMethod: (spikesMap: string[][]) => void,
@@ -168,6 +173,41 @@ export class SnakeEngine {
         this.startedTime = Date.now();
     }
 
+    private checkKeyActive = () => {
+        if(!this.canChangeDirection) {
+            return;
+        }
+
+        if(this.leftKeyActive && this.activeDirection !== SnakePart.Direction.Left && this.activeDirection !== SnakePart.Direction.Right) {
+            this.canChangeDirection = false;
+            this.changeSnakeDirection(SnakePart.Direction.Left);
+        } else if(this.upKeyActive && this.activeDirection !== SnakePart.Direction.Up && this.activeDirection !== SnakePart.Direction.Down) {
+            this.canChangeDirection = false;
+            this.changeSnakeDirection(SnakePart.Direction.Up);
+        } else if(this.rightKeyActive && this.activeDirection !== SnakePart.Direction.Left && this.activeDirection !== SnakePart.Direction.Right) {
+            this.canChangeDirection = false;
+            this.changeSnakeDirection(SnakePart.Direction.Right);
+        } else if(this.downKeyActive && this.activeDirection !== SnakePart.Direction.Up && this.activeDirection !== SnakePart.Direction.Down) {
+            this.canChangeDirection = false;
+            this.changeSnakeDirection(SnakePart.Direction.Down);
+        }
+    }
+
+    //input of the user
+    private keyUpEventHandler = (event: KeyboardEvent) => {
+        if(event.key === 'ArrowUp' || event.key === 'w') {
+            this.upKeyActive = false;
+        } else if(event.key === 'ArrowRight' || event.key === 'd') {
+            this.rightKeyActive = false;
+        } else if(event.key === 'ArrowDown' || event.key === 's') {
+            this.downKeyActive = false;
+        } else if(event.key === 'ArrowLeft' || event.key === 'a') {
+            this.leftKeyActive = false;
+        }
+
+        this.checkKeyActive();
+    }
+
     //input of the user
     private keyDownEventHandler = (event: KeyboardEvent) => {
         //prevents scrolling the window when playing
@@ -175,40 +215,22 @@ export class SnakeEngine {
             event.preventDefault();
         }
 
-        let directionChanged: boolean = false;
-        let newDirection: SnakePart.Direction = SnakePart.Direction.Up;
-
         //checks for a direction change
         if(event.key === 'ArrowUp' || event.key === 'w') {
-            if(this.activeDirection !== SnakePart.Direction.Down && this.activeDirection !== SnakePart.Direction.Up) {
-                newDirection = SnakePart.Direction.Up;
-                directionChanged = true;
-            }
+            this.upKeyActive = true;
         } else if(event.key === 'ArrowRight' || event.key === 'd') {
-            if(this.activeDirection !== SnakePart.Direction.Right && this.activeDirection !== SnakePart.Direction.Left) {
-                newDirection = SnakePart.Direction.Right;
-                directionChanged = true;
-            }
+            this.rightKeyActive = true;
         } else if(event.key === 'ArrowDown' || event.key === 's') {
-            if(this.activeDirection !== SnakePart.Direction.Down && this.activeDirection !== SnakePart.Direction.Up) {
-                newDirection = SnakePart.Direction.Down;
-                directionChanged = true;
-            }
+            this.downKeyActive = true;
         } else if(event.key === 'ArrowLeft' || event.key === 'a') {
-            if(this.activeDirection !== SnakePart.Direction.Right && this.activeDirection !== SnakePart.Direction.Left) {
-                newDirection = SnakePart.Direction.Left;
-                directionChanged = true;
-            };
+            this.leftKeyActive = true;
         }
 
-        if(directionChanged && this.canChangeDirection) {
-            this.ChangeSnakeDirection(newDirection);
-            this.canChangeDirection = false;
-        }
+        this.checkKeyActive();
     }
 
     //used  for changing the head piece in the middle of it's animation
-    private ChangeSnakeDirection(newDirection: SnakePart.Direction) {
+    private changeSnakeDirection(newDirection: SnakePart.Direction) {
         this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].startDirection = SnakePart.oppositeDirection(this.activeDirection);
         this.snakeInfo[this.currentHeadOfSnake.y][this.currentHeadOfSnake.x].endDirection = newDirection;
         this.activeDirection = newDirection;
@@ -298,9 +320,10 @@ export class SnakeEngine {
         this.pauseMethod();
         setTimeout(() => {
             document.addEventListener('keydown', this.keyDownEventHandler);
+            document.addEventListener('keyup', this.keyUpEventHandler);
 
             let intervalRef = setInterval(() => {
-                this.canChangeDirection = true;
+                this.canChangeDirection = false;
                 this.lastCall = Date.now();
 
                 //on first iteration I just start the animation
@@ -406,6 +429,10 @@ export class SnakeEngine {
                     queue.push(newHead);
                     this.currentHeadOfSnake = newHead;
                     removeCoordFromArray(emptyTiles, newHead);
+
+                    this.canChangeDirection = true;
+                    this.checkKeyActive();
+
                 } else {
                     //stoping the game
                     if(!SnakeEngine.inBounds(newHead) || levelTiles[newHead.y][newHead.x] !== 'P') {
@@ -419,6 +446,7 @@ export class SnakeEngine {
                 if(levelEnded) {
                     clearInterval(intervalRef);
                     document.removeEventListener('keydown', this.keyDownEventHandler);
+                    document.removeEventListener('keyup', this.keyUpEventHandler);
 
                     if(this.gameActive) {
                         let newAppleValue: number;
