@@ -183,14 +183,14 @@ const AccountPage:React.FC = observer(() => {
                     <div className="w-full text-center text-5xl border-b-4 pb-2 border-white">History</div>
                     {history.map((value, index) => <div key={JSON.stringify(value.date)}
                     style={{backgroundColor: index % 2 === 0 ? "#03896c" : "#008F7E"}}
-                    className="w-full text-white font-semibold text-xl mt-2 flex flex-wrap justify-around items-center rounded-xl">
-                        <div className="mx-10 my-2">Score {value.score}</div>
-                        <div className="mx-10 my-2">
+                    className="w-full text-white font-semibold text-xl mt-2 flex flex-wrap gap-x-5 gap-y-1 px-4 py-2 justify-around items-center rounded-xl">
+                        <div>Score {value.score}</div>
+                        <div>
                             Time&nbsp;{Math.floor(value.seconds / 60)}:
                             {value.seconds % 60 < 10 ? "0" : ""}
                             {value.seconds % 60}
                         </div>
-                        <div className="mx-10 my-2">{value.date.toDateString()}</div>
+                        <div>{value.date.toDateString()}</div>
                     </div>)}
 
                     {historyLeft ? <div className="w-full flex justify-center mt-4">

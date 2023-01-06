@@ -82,29 +82,29 @@ const HomePage:React.FC = () => {
         }}
         >
             <MdLeaderboard className="w-10 h-10 text-white ml-8"/>
-            <div className="text-white text-2xl text-center w-full mr-10">Go to the Leaderboard!</div>
+            <div className="text-white text-2xl text-center w-full mr-10">Go to the Leaderboards!</div>
         </motion.button>
 
         <h1 id="Rules" className="text-white font-semibold text-4xl border-b-4 pb-1 border-white mt-14">How to play</h1>
 
-        <div className="flex flex-col items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[600px]">
+        <div className="flex flex-col items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[607px]">
             <img className="w-64 h-64 object-cover object-top" src={Pic1Header} alt=""/>
             <div className="text-white text-2xl w-full sm:w-auto">
-                Gather apples to add to your <span className="text-green-400">score!</span> After a certain number of apples, the <span className="text-gold">golden apples</span> will appear and they are more valuable! Also, apples become more valuable in later levels.
+                Gather apples to add to your <span className="text-green-400">score!</span> After a certain number of apples, the <span className="text-gold">golden apples</span> will appear, and they are more valuable! Also, apples become more valuable at later levels.
             </div>
         </div>
 
-        <div className="flex flex-col-reverse items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[600px]">
+        <div className="flex flex-col-reverse items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[607px]">
             <div className="text-white text-2xl w-full sm:w-auto">
-                After you gather a certain amount of apples from a level, a <span className="text-red-700">portal</span> will appear! Entering the portal will teleport the snake to the next level, also losing it's size in the process.
+                After you gather a certain amount of apples from a level, a <span className="text-red-700">portal</span> will appear! Entering the portal will teleport the snake to the next level. It will also lose its gathered size when entering the portal.
             </div>
             <img className="w-64 h-64 object-cover object-top" src={Pic2Header} alt=""/>
         </div>
 
-        <div className="flex flex-col items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[600px]">
+        <div className="flex flex-col items-center sm:flex-row sm:items-start justify-between mt-10 gap-10 w-[90%] sm:w-[607px]">
             <img className="w-64 h-64 object-cover object-top" src={Pic3Header} alt=""/>
             <div className="text-white text-2xl w-full sm:w-auto">
-                Avoid the <span className="text-amber-600">spikes!</span> They act like walls and if you hit them you lose! Also, don't hit the <span className="text-amber-600">margins of the board</span> if you don't want to restart! 😉
+                Avoid the <span className="text-amber-600">spikes!</span> They act like walls, and if you hit them, you lose! Also, don't hit the <span className="text-amber-600">margins of the board</span> if you don't want to restart!😉
             </div>
         </div>
 
@@ -120,7 +120,7 @@ const HomePage:React.FC = () => {
                 <BsFillMouse2Fill className="h-20 w-20 ml-10 sm:ml-0 text-gray-500"/>
             </div>
             <div className="text-white text-2xl w-[320px] mt-2 sm:mt-0 sm:w-auto">
-                Press <span className="text-green-500">ENTER</span> or <span className="text-green-500">LEFT-CLICK</span> on the board to start the game
+                Press <span className="text-green-500">ENTER</span> or <span className="text-green-500">LEFT-CLICK</span> on the board to start the game.
             </div>
         </div>
 
@@ -159,8 +159,8 @@ const HomePage:React.FC = () => {
         </div>
 
         <div className="w-full flex justify-center mb-52">
-            <div className="text-white text-2xl w-[320px] sm:w-[540px] mt-4">
-                Press either <span className="text-green-500">W, A, S, D</span> or the <span className="text-green-500">arrows</span> to change the direction of the snake.
+            <div className="text-white text-2xl w-[340px] sm:w-[490px] mt-5 text-justify">
+                Press <span className="text-green-500">W, A, S, D,</span> or the <span className="text-green-500">arrows</span> to change the snake's direction.
             </div>
         </div>
     </div>);

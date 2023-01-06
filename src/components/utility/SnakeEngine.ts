@@ -88,7 +88,7 @@ export class SnakeEngine {
     ];
 
     private static readonly boardSize: number = 11;
-    private static readonly applesToAdvance: number = 5;
+    private static readonly applesToAdvance: number = 8;
     private speed: number;
     private activeDirection: SnakePart.Direction = SnakePart.Direction.Right;
     private gameActive: boolean = false;
@@ -133,7 +133,7 @@ export class SnakeEngine {
         if(speed !== undefined) {
             this.speed = speed;
         } else {
-            this.speed = 0.3;
+            this.speed = 0.27;
         }
     }
 
@@ -417,7 +417,7 @@ export class SnakeEngine {
 
                         if(level % SnakeEngine.spikeMaps.length === SnakeEngine.spikeMaps.length - 1) {
                             newAppleValue = appleValue + 1;
-                            this.speed = Math.max(this.speed - 0.1, 0.1);
+                            this.speed = Math.max(this.speed - 0.06, 0.09);
                         } else {
                             newAppleValue = appleValue;
                         }
