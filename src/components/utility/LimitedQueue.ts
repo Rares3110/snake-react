@@ -1,3 +1,4 @@
+//queue that has a certain size, advantage of getting any value in the queue in O(1)
 export class LimitedQueue<T> {
     private array: T[];
     private size: number;

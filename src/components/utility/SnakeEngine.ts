@@ -94,6 +94,7 @@ export class SnakeEngine {
     private gameActive: boolean = false;
     private gameEnded: boolean = false;
 
+    //methods for changing the board
     private changeSpikesMethod: (spikesMap: string[][]) => void;
     private changeAppleMethod: (position: Coord, toAdd: boolean, appleValue?: number, appleType?: AppleTypes) => void;
     private changePortalMethod: (position: Coord, toAdd: boolean) => void;
@@ -130,6 +131,7 @@ export class SnakeEngine {
         this.pauseMethod = pauseMethod;
         this.setScore = setScore;
 
+        //setting initial speed
         if(speed !== undefined) {
             this.speed = speed;
         } else {
@@ -154,6 +156,7 @@ export class SnakeEngine {
     }
 
     Start = () => {
+        //only starting the game once
         if(!this.gameActive && !this.gameEnded){
             this.gameActive = true;
             if(this.setScore !== undefined)
@@ -161,6 +164,7 @@ export class SnakeEngine {
             this.NewLevel(0, 1);
         }
 
+        //starting the count
         this.startedTime = Date.now();
     }
 
@@ -217,6 +221,7 @@ export class SnakeEngine {
             (Date.now() - this.lastCall) / 1000);
     }
 
+    //this method is active while the snake is alive in the level
     private NewLevel = (level: number, appleValue: number) => {
         let levelEnded: boolean = false;
         //cloning a matrix
@@ -340,9 +345,11 @@ export class SnakeEngine {
                             this.speed);
                     }
 
-                    //if it eats an apple it
+                    //if it eats an apple
                     if(sameCoord(newHead, applePosition)) {
                         this.changeAppleMethod(applePosition, false);
+
+                        //adding the score
                         if(this.setScore !== undefined) {
                             if(applesEaten < SnakeEngine.applesToAdvance) {
                                 this.score += appleValue;
@@ -400,6 +407,7 @@ export class SnakeEngine {
                     this.currentHeadOfSnake = newHead;
                     removeCoordFromArray(emptyTiles, newHead);
                 } else {
+                    //stoping the game
                     if(!SnakeEngine.inBounds(newHead) || levelTiles[newHead.y][newHead.x] !== 'P') {
                         this.gameActive = false;
                         this.gameEnded = true;
@@ -434,6 +442,8 @@ export class SnakeEngine {
                         this.snakeInfo = [...Array(SnakeEngine.boardSize)].map(() => {
                             return [...Array(SnakeEngine.boardSize)];
                         });
+
+                        //going to a new level
                         this.NewLevel(level + 1, newAppleValue);
                     } else {
                         if(userData.id !== undefined) {

@@ -9,6 +9,7 @@ const LeaderboardsPage:React.FC = () => {
     const [users, setUsers] = useState<TopUserInfo[]>([]);
     const searchActive = useRef<boolean>(false);
 
+    //only asking for the top players once
     useEffect(() => {
         if(!searchActive.current) {
             searchActive.current = true;

@@ -103,7 +103,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
         }));
     }
 
-    //method to add apples on the board
+    //method to add or remove apples on the board
     const changeApple = (position: Coord, toAdd: boolean, appleValue: number = 1, appleType: AppleTypes = AppleTypes.Normal) => {
         let myIndex = SnakeEngine.coordToArrayPoz(position);
 
@@ -121,6 +121,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
         }));
     }
 
+    //method for adding or removing a portal
     const changePortal = (position: Coord, toAdd: boolean) => {
         let myIndex = SnakeEngine.coordToArrayPoz(position);
 
@@ -224,11 +225,13 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
     const [pauseTime, setPauseTime] = useState(0);
     const pauseTimeStart = 2.0;
 
+    //starting the game when clicking on it
     const handleStartGame = () => {
         new SnakeEngine(changeSpikes, changeApple, changePortal, changeSnakePiece, clean, pause, setScore).Start();
         setIsGameRunning(true);
     }
 
+    //usedwhen the game is over to clean the board
     const clean = useCallback(() => {
         pause();
         setTimeout(() => {
@@ -261,6 +264,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
     //on enter scroll to game and start
     const gridRef = useRef<HTMLInputElement>(null);
 
+    //scrolling to the game and starting it when pressing enter
     const handleEnterKeyDown = useCallback((event: KeyboardEvent) => {
         if(event.code === 'Enter') {
             event.preventDefault();
@@ -275,6 +279,7 @@ const Snake:React.FC<{setScore?: React.Dispatch<React.SetStateAction<number>>}> 
         }
     }, [clean, isGameRunning, setScore]);
 
+    //adding the event only once
     useEffect(() => {
         document.addEventListener('keydown', handleEnterKeyDown);
         return () => {

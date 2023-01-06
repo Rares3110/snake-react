@@ -22,6 +22,8 @@ const AccountPage:React.FC = observer(() => {
     const [historyLeft, setHistoryLeft] = useState<boolean>(false);
     const searchStarted = useRef<boolean>(false);
 
+    //redirecting if the user is not logged in
+    //only asking for the first batch of games once
     useEffect(() => {
         if(userData.id === undefined) {
             navigate('/login/0');

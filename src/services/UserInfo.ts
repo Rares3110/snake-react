@@ -49,7 +49,9 @@ export const addGame = (score: number, seconds: number) => {
     }
 }
 
+//value used to get the next batch of games
 var lastHistoryRecord: QueryDocumentSnapshot<DocumentData>;
+//value that allows requests to be made if there is anything left to retrieve
 var historyNotFull: boolean;
 export interface HistoryElement {
     score: number,

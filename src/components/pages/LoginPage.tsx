@@ -17,6 +17,7 @@ const LoginPage:React.FC = () => {
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState(false);
 
+    //redirecting if the user is logged in
     useEffect(() => {
         if(userData.id !== undefined) {
             navigate('/account');
